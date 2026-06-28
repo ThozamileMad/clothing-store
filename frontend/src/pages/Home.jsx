@@ -1,9 +1,18 @@
 import "../styles/home.css";
-import versaceImage from "../assets/home/versace.png";
-import zaraImage from "../assets/home/zara.png";
-import gucciImage from "../assets/home/gucci.png";
-import pradaImage from "../assets/home/prada.png";
-import calvinKleinImage from "../assets/home/calvin-klein.png";
+
+import heroImage from "../assets/home/hero.jpg";
+
+import versaceImage from "../assets/home/brands/versace.png";
+import zaraImage from "../assets/home/brands/zara.png";
+import gucciImage from "../assets/home/brands/gucci.png";
+import pradaImage from "../assets/home/brands/prada.png";
+import calvinKleinImage from "../assets/home/brands/calvin-klein.png";
+
+import casualImage from "../assets/home/categories/casual.png";
+import formalImage from "../assets/home/categories/formal.png";
+import partyImage from "../assets/home/categories/party.png";
+import gymImage from "../assets/home/categories/gym.png";
+
 import { NavLink } from "react-router-dom";
 
 const PRODUCTS = [
@@ -57,12 +66,53 @@ const PRODUCTS = [
   },
 ];
 
-const BRANDS_IMAGES = [
+const BRAND_IMAGES = [
   versaceImage,
   zaraImage,
   gucciImage,
   pradaImage,
   calvinKleinImage,
+];
+
+const CATEGORY_NAMES = ["Casual", "Formal", "Party", "Gym"];
+
+const CATEGORY_IMAGES = [casualImage, formalImage, partyImage, gymImage];
+
+const REVIEWS = [
+  {
+    username: "Alex K.",
+    rating: 3,
+    comment:
+      "Finding clothes that match my personal style has always been difficult, but this store nailed it 🔥 The hoodie quality is amazing!",
+    verified: true,
+  },
+  {
+    username: "Sarah M.",
+    rating: 4.5,
+    comment:
+      "Absolutely love this dress 😍 The material feels premium and the fitting is perfect.",
+    verified: true,
+  },
+  {
+    username: "Jordan P.",
+    rating: 3.5,
+    comment:
+      "The design is nice but the sizing was slightly smaller than expected.",
+    verified: false,
+  },
+  {
+    username: "Mia R.",
+    rating: 5,
+    comment:
+      "Great quality jeans 👌 They feel durable and look exactly like the pictures.",
+    verified: true,
+  },
+  {
+    username: "David L.",
+    rating: 5,
+    comment: "Best purchase I've made this month 😂🔥 Definitely buying more!",
+    verified: true,
+  },
 ];
 
 const Home = () => {
@@ -186,13 +236,13 @@ const Home = () => {
 
           {/* Hero Second Section */}
           <div className="hero-section-2">
-            <img className="hero-image" src="" alt="hero-image"></img>
+            <img className="hero-image" src={heroImage} alt="hero-image"></img>
           </div>
         </div>
 
         {/* Brand Associations */}
         <div className="brand-associations">
-          {BRANDS_IMAGES.map((b, index) => (
+          {BRAND_IMAGES.map((b, index) => (
             <img
               key={index}
               className="brand-association-image"
@@ -223,16 +273,188 @@ const Home = () => {
         </button>
       </section>
 
+      {/* Procuct Categories */}
       <section id="categories">
         <h1 className="catagories-title">BROWSE BY DRESS STYLE</h1>
+
+        {/* All Categories */}
         <div className="catagory-list">
-          <div className="catagory-item" style={{
-            background: `url(${})`
-          }}>
-            <h3 className="catagory-name"></h3>
-          </div>
+          {CATEGORY_IMAGES.map((c, index) => (
+            <div
+              key={index}
+              className="catagory-item"
+              style={{
+                background: `url(${c})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}
+            >
+              <h3 className="catagory-name">{CATEGORY_NAMES[index]}</h3>
+            </div>
+          ))}
         </div>
       </section>
+
+      <section id="reviews">
+        <div className="reviews-title-and-buttons">
+          <h1 className="reviews-title">OUR HAPPY CUSTOMERS</h1>
+          <div className="reviews-buttons">
+            <button
+              className="reviews-button-left"
+              type="button"
+              onClick={() => {}}
+            >
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <button
+              className="reviews-button-right"
+              type="button"
+              onClick={() => {}}
+            >
+              <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div className="reviews-list">
+          {REVIEWS.map((r, index) => (
+            <div key={index} className="review-card">
+              {/* Review Ratings */}
+              <div className="review-card-star-ratings">
+                {/* Review Full Stars */}
+                {Array(Math.floor(parseFloat(r.rating))).fill(
+                  <i className="fa-solid fa-star"></i>,
+                )}
+
+                {/* Review Half Star */}
+                {parseFloat(r.rating) % 1 > 0.4 ? (
+                  <i className="fa-solid fa-star-half"></i>
+                ) : null}
+              </div>
+
+              <div className="review-card-username-and-verified">
+                <h4>{r.username}</h4>
+                {r.verified ? (
+                  <i className="fa-solid fa-circle-check"></i>
+                ) : null}
+              </div>
+
+              <p className="review-card-comment">{r.comment}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="newsletter-subscription">
+        <h1 className="newsletter-subscription-title">
+          STAY UP TO DATE ABOUT OUR LATEST OFFERS
+        </h1>
+        <form id="newsletter-subscription-form" onSubmit={() => {}} noValidate>
+          <div className="newsletter-form-field">
+            <i class="fa-regular fa-envelope"></i>
+            <input
+              type="email"
+              id="newsLetterEmail"
+              name="newsLetterEmail"
+              placeholder="Enter your email address"
+            ></input>
+          </div>
+          <button id="newsLetterSubmitButton" type="submit">
+            Subscribe to Newsletter
+          </button>
+        </form>
+      </section>
+
+      <footer>
+        <div className="footer-links">
+          <div className="footer-brand-description-and-socials">
+            <h1 className="footer-brand-name">SHOP.CO</h1>
+            <p className="footer-brand-description">
+              We have clothes that suits your style and which you’re proud to
+              wear. From women to men.
+            </p>
+            <div className="footer-social-links">
+              <a href="#" className="footer-social-link">
+                <i className="fa-brands fa-x-twitter"></i>
+              </a>
+              <a href="#" className="footer-social-link">
+                <i className="fa-brands fa-facebook-f"></i>
+              </a>
+              <a href="#" className="footer-social-link">
+                <i className="fa-brands fa-instagram"></i>
+              </a>
+              <a href="#" className="footer-social-link">
+                <i className="fa-brands fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+
+          <div className="footer-company-links">
+            <NavLink className="footer-link" to="#">
+              About
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Features
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Works
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Career
+            </NavLink>
+          </div>
+
+          <div className="footer-help-links">
+            <NavLink className="footer-link" to="#">
+              Customer Support
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Delivery Details
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Terms &AMP Conditions
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Privacy Policy
+            </NavLink>
+          </div>
+
+          <div className="footer-faqs-links">
+            <NavLink className="footer-link" to="#">
+              Account
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Manage Deliveries
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Orders
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Payments
+            </NavLink>
+          </div>
+
+          <div className="footer-resources-links">
+            <NavLink className="footer-link" to="#">
+              Free eBooks
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              Development Tutorial
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              How to Blog
+            </NavLink>
+            <NavLink className="footer-link" to="#">
+              YouTube Playlist
+            </NavLink>
+          </div>
+        </div>
+        <hr></hr>
+        <p className="footer-copyright-notice">
+          Clothify © {new Date().getFullYear()} All Rights Reserved.
+        </p>
+      </footer>
     </main>
   );
 };
