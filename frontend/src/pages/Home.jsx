@@ -176,16 +176,27 @@ const Home = () => {
             {/* Navigation Links */}
             <ul className="nav-links">
               <li className="nav-link">
-                Shop <i className="fa-solid fa-chevron-down"></i>
+                <button className="nav-dropdown-btn" type="button">
+                  Shop <i className="fa-solid fa-chevron-down"></i>
+                </button>
               </li>
-              <li className="nav-link">On Sale</li>
-              <li className="nav-link">New Arrivals</li>
-              <li className="nav-link">Brands</li>
+              <li className="nav-link">
+                <NavLink to="#">On Sale</NavLink>
+              </li>
+              <li className="nav-link">
+                <NavLink to="#">New Arrivals</NavLink>
+              </li>
+              <li className="nav-link">
+                <NavLink to="#">Brands</NavLink>
+              </li>
             </ul>
 
             {/* Search Bar */}
             <form id="nav-search-form" onSubmit={() => {}} noValidate>
-              <i className="fa-brands fa-sistrix"></i>
+              <div className="nav-search-form-icon-container">
+                <i className="fa-brands fa-sistrix"></i>
+              </div>
+
               <input
                 type="text"
                 id="navSearchBar"
@@ -196,8 +207,12 @@ const Home = () => {
 
             {/* Navigation Icons */}
             <div className="nav-icons">
-              <i className="fa-solid fa-cart-shopping"></i>
-              <i className="fa-solid fa-circle-user"></i>
+              <NavLink to="#">
+                <i className="fa-solid fa-cart-shopping"></i>
+              </NavLink>
+              <NavLink to="#">
+                <i className="fa-solid fa-circle-user"></i>
+              </NavLink>
             </div>
           </nav>
         </header>
@@ -223,10 +238,12 @@ const Home = () => {
                 <h2>200+</h2>
                 <p>International Brands</p>
               </div>
+              <div className="hero-stat-divider"></div>
               <div className="hero-stat-item high-quality-products">
                 <h2>2000+</h2>
                 <p>High Quality Products</p>
               </div>
+              <div className="hero-stat-divider"></div>
               <div className="hero-stat-item happy-customers">
                 <h2>30000+</h2>
                 <p>Happy Customers</p>
