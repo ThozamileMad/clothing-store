@@ -2,6 +2,10 @@
   font-family: "Roboto", sans-serif;
 }
 
+section {
+  margin-bottom: 80px;
+}
+
 header {
   display: flex;
   justify-content: center;
@@ -83,7 +87,7 @@ header {
 
 .hero {
   background-color: #f2f0f1;
-  padding: 80px 40px;
+  padding: 0 40px;
   display: flex;
 }
 
@@ -91,6 +95,7 @@ header {
   display: flex;
   flex-direction: column;
   row-gap: 40px;
+  padding-top: 100px;
 }
 
 .hero-title {
@@ -137,4 +142,125 @@ header {
   height: 100%;
   border-radius: 100%;
   background-color: #c2c2c2;
+}
+
+.hero-section-2 {
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 750px;
+  object-fit: contain;
+  height: 750px;
+}
+
+.brand-associations {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  justify-content: space-between;
+  padding: 25px 80px;
+}
+
+.brand-association-image.versace {
+  width: 100px;
+}
+
+.brand-association-image.zara {
+  width: 70px;
+}
+
+.brand-association-image.gucci {
+  width: 100px;
+}
+
+.brand-association-image.prada {
+  width: 100px;
+}
+
+.brand-association-image.calvin-klein {
+  width: 100px;
+}
+
+.product-title {
+  text-align: center;
+  font-weight: 1000;
+  font-size: 40px;
+  margin-bottom: 60px;
+}
+
+.product-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  place-items: center;
+  row-gap: 100px;
+}
+
+.product-card-image-container {
+  background-color: #f2f0f1;
+  border-radius: 20px;
+}
+
+.product-card-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.product-card-name {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.product-card-ratings {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 15px;
+}
+
+.product-card-star-rating {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+}
+
+.product-card-star-rating i {
+  color: #ffc633;
+}
+
+.product-card-number-rating {
+  font-size: 14px;
+}
+
+.product-view-more-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.product-view-more-btn {
+  border: 0.5px solid #999999;
+  background-color: transparent;
+  font-size: 16px;
+  padding: 20px;
+  width: 218px;
+  border-radius: 62px;
+  cursor: pointer;
+}
+
+.product-view-more-btn:hover {
+  border: 0.5px solid black;
+  background-color: black;
+  color: white;
+}
+
+hr {
+  width: 1000px;
+}
+
+#top-selling {
+  margin-top: 80px;
 }

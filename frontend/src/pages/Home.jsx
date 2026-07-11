@@ -1,12 +1,19 @@
 import "../styles/home.css";
 
-import heroImage from "../assets/home/hero.jpg";
+import heroImage from "../assets/home/hero-2-no-bg.png";
 
 import versaceImage from "../assets/home/brands/versace.png";
 import zaraImage from "../assets/home/brands/zara.png";
 import gucciImage from "../assets/home/brands/gucci.png";
 import pradaImage from "../assets/home/brands/prada.png";
 import calvinKleinImage from "../assets/home/brands/calvin-klein.png";
+
+import checkeredShirt from "../assets/home/products/checkered-shirt.png";
+import fadedSkinnyJeans from "../assets/home/products/faded-skinny-jeans.png";
+import tShirtWithTapeDetails from "../assets/home/products/t-shirt-with-tape-details.png";
+import sleeveStripedTShirt from "../assets/home/products/sleeve-striped-t-shirt.png";
+import courageGraphicTShirt from "../assets/home/products/courage-graphic-t-shirt.png";
+import looseFitBermudaShorts from "../assets/home/products/loose-fit-bermuda-shorts.png";
 
 import casualImage from "../assets/home/categories/casual.png";
 import formalImage from "../assets/home/categories/formal.png";
@@ -18,48 +25,48 @@ import { NavLink } from "react-router-dom";
 const PRODUCTS = [
   {
     id: 1,
-    name: "Classic Black Hoodie",
-    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7",
+    name: "Checkered Shirt",
+    image: checkeredShirt,
     rating: 4.5,
     numberOfRatings: 238,
     price: 599.99,
   },
   {
     id: 2,
-    name: "Oversized White T-Shirt",
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+    name: "Faded Skinny Jeans",
+    image: fadedSkinnyJeans,
     rating: 4.8,
     numberOfRatings: 512,
     price: 299.99,
   },
   {
     id: 3,
-    name: "Denim Jacket",
-    image: "https://images.unsplash.com/photo-1551537482-f2075a1d41f2",
+    name: "T-shirt with Tape Details",
+    image: tShirtWithTapeDetails,
     rating: 4.3,
     numberOfRatings: 184,
     price: 899.99,
   },
   {
     id: 4,
-    name: "Streetwear Hoodie",
-    image: "https://images.unsplash.com/photo-1578681994506-b8f463449011",
+    name: "Sleeve Striped T-shirt",
+    image: sleeveStripedTShirt,
     rating: 4.7,
     numberOfRatings: 329,
     price: 749.99,
   },
   {
     id: 5,
-    name: "Casual Grey Sweatshirt",
-    image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633",
+    name: "Courage Graphic T-shirt",
+    image: courageGraphicTShirt,
     rating: 4.4,
     numberOfRatings: 97,
     price: 499.99,
   },
   {
     id: 6,
-    name: "Minimalist Black T-Shirt",
-    image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+    name: "Loose Fit Bermuda Shorts",
+    image: looseFitBermudaShorts,
     rating: 4.9,
     numberOfRatings: 641,
     price: 249.99,
@@ -67,11 +74,11 @@ const PRODUCTS = [
 ];
 
 const BRAND_IMAGES = [
-  versaceImage,
-  zaraImage,
-  gucciImage,
-  pradaImage,
-  calvinKleinImage,
+  { className: "versace", image: versaceImage },
+  { className: "zara", image: zaraImage },
+  { className: "gucci", image: gucciImage },
+  { className: "prada", image: pradaImage },
+  { className: "calvin-klein", image: calvinKleinImage },
 ];
 
 const CATEGORY_NAMES = ["Casual", "Formal", "Party", "Gym"];
@@ -118,48 +125,43 @@ const REVIEWS = [
 const Home = () => {
   const showProductList = (list) => {
     return list.map((p, index) => (
-      <div key={index} className="product-list">
-        {/* Product Item */}
-        <div className="product-card">
-          {/* Product Image */}
-          <div className="product-card-image-container">
-            {p.image ? (
-              <img
-                className="product-card-image"
-                src={p.image || null}
-                alt="product-card-image"
-              ></img>
-            ) : (
-              <i class="fa-solid fa-image"></i>
-            )}
-          </div>
-
-          {/* Product Name */}
-          <h3 className="product-card-name">{p.name || "N/A"}</h3>
-
-          {/* Product Ratings */}
-          <div className="product-card-ratings">
-            {/* Product Star Ratings */}
-            <div className="product-card-star-rating">
-              {/* Product Full Stars */}
-              {Array(Math.floor(parseFloat(p.rating))).fill(
-                <i className="fa-solid fa-star"></i>,
-              )}
-
-              {/* Product Half Star */}
-              {parseFloat(p.rating) % 1 > 0.4 ? (
-                <i className="fa-solid fa-star-half"></i>
-              ) : null}
-            </div>
-
-            {/* Product Number Ratng */}
-            <span className="product-card-number-rating">
-              {p.rating || 0}/5
-            </span>
-          </div>
-
-          <span className="product-card-price">R {p.price || 0}</span>
+      <div key={index} className="product-card">
+        {/* Product Image */}
+        <div className="product-card-image-container">
+          {p.image ? (
+            <img
+              className="product-card-image"
+              src={p.image || null}
+              alt="product-card-image"
+            ></img>
+          ) : (
+            <i class="fa-solid fa-image"></i>
+          )}
         </div>
+
+        {/* Product Name */}
+        <h3 className="product-card-name">{p.name || "N/A"}</h3>
+
+        {/* Product Ratings */}
+        <div className="product-card-ratings">
+          {/* Product Star Ratings */}
+          <div className="product-card-star-rating">
+            {/* Product Full Stars */}
+            {Array(Math.floor(parseFloat(p.rating))).fill(
+              <i className="fa-solid fa-star"></i>,
+            )}
+
+            {/* Product Half Star */}
+            {parseFloat(p.rating) % 1 > 0.4 ? (
+              <i className="fa-solid fa-star-half"></i>
+            ) : null}
+          </div>
+
+          {/* Product Number Ratng */}
+          <span className="product-card-number-rating">{p.rating || 0}/5</span>
+        </div>
+
+        <span className="product-card-price">R {p.price || 0}</span>
       </div>
     ));
   };
@@ -262,8 +264,8 @@ const Home = () => {
           {BRAND_IMAGES.map((b, index) => (
             <img
               key={index}
-              className="brand-association-image"
-              src={b || null}
+              className={`brand-association-image ${b.className || ""}`}
+              src={b.image || null}
               alt="brand-association-image"
             ></img>
           ))}
@@ -273,21 +275,25 @@ const Home = () => {
       {/* New Products */}
       <section id="new-arrivals">
         <h1 className="product-title">NEW ARRIVALS</h1>
-        {showProductList(PRODUCTS)}
-        <button type="button" className="product-view-more-btn">
-          View More
-        </button>
+        <div className="product-list">{showProductList(PRODUCTS)}</div>
+        <div className="product-view-more-btn-container">
+          <button type="button" className="product-view-more-btn">
+            View More
+          </button>
+        </div>
       </section>
 
       <hr></hr>
 
       {/* Products with the most sales */}
-      <section className="top-selling">
+      <section id="top-selling">
         <h1 className="product-title">TOP SELLING</h1>
-        {showProductList(PRODUCTS)}
-        <button type="button" className="product-view-more-btn">
-          View More
-        </button>
+        <div className="product-list">{showProductList(PRODUCTS)}</div>
+        <div className="product-view-more-btn-container">
+          <button type="button" className="product-view-more-btn">
+            View More
+          </button>
+        </div>
       </section>
 
       {/* Procuct Categories */}
