@@ -192,9 +192,11 @@ header {
 
 .product-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   place-items: center;
   row-gap: 100px;
+  column-gap: 1rem;
+  padding-inline: 1rem;
 }
 
 .product-card-image-container {
