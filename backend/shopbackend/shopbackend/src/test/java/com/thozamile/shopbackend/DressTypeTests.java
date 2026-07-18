@@ -14,36 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ProductTests {
+class DressTypeTests {
 	@Autowired
 	TestRestTemplate restTemplate;
 
 	@Test
-	void getProduct() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/1", String.class);
+	void getDressType() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/dress_types/1", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        Number styleId = documentContext.read("$.style_id");
-        Number typeId = documentContext.read("$.type_id");
         String name = documentContext.read("$.name");
-        Double price = documentContext.read("$.price");
-        String description = documentContext.read("$.description");
         
         assertThat(id).isEqualTo(1);
-        assertThat(styleId).isEqualTo(1);
-        assertThat(typeId).isEqualTo(1);
-        assertThat(name).isEqualTo("Baggy Jeans");
-        assertThat(price).isEqualTo(37.99);
-        assertThat(description).isEqualTo("Simple Baggy Jeans.");
+        assertThat(name).isEqualTo("pants");
 	}
-
-    void getNonExistingProduct() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/2", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isEmpty();
-    }
-
 }

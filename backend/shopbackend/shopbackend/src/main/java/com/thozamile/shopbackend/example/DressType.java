@@ -1,5 +1,5 @@
 package com.thozamile.shopbackend.example;
 
-record DressType(Long id, String name) {
+public record DressType(Long id, String name) {
 
 }

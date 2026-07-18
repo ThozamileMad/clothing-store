@@ -28,7 +28,7 @@ public class ProductVariantTests {
         Number id = documentContext.read("$.id");
         Number productId = documentContext.read("$.product_id");
         String color = documentContext.read("$.color");
-        Number size = documentContext.read("$.size");
+        String size = documentContext.read("$.size");
         Number stock = documentContext.read("$.stock");
 
         assertThat(id).isEqualTo(1);
@@ -48,7 +48,7 @@ public class ProductVariantTests {
         Number id = documentContext.read("$.id");
         Number productId = documentContext.read("$.product_id");
         String color = documentContext.read("$.color");
-        Number size = documentContext.read("$.size");
+        String size = documentContext.read("$.size");
         Number stock = documentContext.read("$.stock");
 
         assertThat(id).isEqualTo(1);

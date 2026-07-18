@@ -2,7 +2,7 @@ package com.thozamile.shopbackend.example;
 
 import java.time.LocalDateTime;
 
-record ProductReview(
+public record ProductReview(
     Long id,
     Long product_id,
     // Long user_id,  // Uncomment when you add users table
