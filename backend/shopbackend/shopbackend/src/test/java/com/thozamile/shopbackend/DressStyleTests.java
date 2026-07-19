@@ -20,15 +20,15 @@ class DressStyleTests {
 
 	@Test
 	void getDressStyle() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/dress_styles/1", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotEmpty();
+            ResponseEntity<String> response = restTemplate.getForEntity("/dress_styles/1", String.class);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getBody()).isNotEmpty();
 
-        DocumentContext documentContext = JsonPath.parse(response.getBody());
-        Number id = documentContext.read("$.id");
-        String name = documentContext.read("$.name");
-        
-        assertThat(id).isEqualTo(1);
-        assertThat(name).isEqualTo("casual");
-	}
+            DocumentContext documentContext = JsonPath.parse(response.getBody());
+            Number id = documentContext.read("$.id");
+            String name = documentContext.read("$.name");
+            
+            assertThat(id).isEqualTo(1);
+            assertThat(name).isEqualTo("casual");
+        }
 }

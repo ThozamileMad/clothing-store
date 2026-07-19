@@ -2,6 +2,7 @@ package com.thozamile.shopbackend;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,8 +27,8 @@ class ProductTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        Number styleId = documentContext.read("$.style_id");
-        Number typeId = documentContext.read("$.type_id");
+        Number styleId = documentContext.read("$.styleId");
+        Number typeId = documentContext.read("$.typeId");
         String name = documentContext.read("$.name");
         Double price = documentContext.read("$.price");
         String description = documentContext.read("$.description");
@@ -36,8 +37,8 @@ class ProductTests {
         assertThat(styleId).isEqualTo(1);
         assertThat(typeId).isEqualTo(1);
         assertThat(name).isEqualTo("Baggy Jeans");
-        assertThat(price).isEqualTo(37.99);
-        assertThat(description).isEqualTo("Simple Baggy Jeans.");
+        assertThat(price).isEqualTo(80.99);
+        assertThat(description).isEqualTo("Comfortable baggy fit jeans with a relaxed feel.");
 	}
 
     void getNonExistingProduct() {

@@ -18,7 +18,7 @@ class ShopbackendApplicationTests {
 	@Autowired
 	TestRestTemplate restTemplate;
 
-	@Test
+	//@Test
 	void getProducts() {
 		
 	}
