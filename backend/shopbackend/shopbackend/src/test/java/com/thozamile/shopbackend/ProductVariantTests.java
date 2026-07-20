@@ -18,7 +18,6 @@ public class ProductVariantTests {
     @Autowired 
     TestRestTemplate restTemplate;
 
-    /* 
     @Test 
     void getProductVariantById() {
         ResponseEntity<String> response = restTemplate.getForEntity("/products/variants/1", String.class);
@@ -34,9 +33,9 @@ public class ProductVariantTests {
 
         assertThat(id).isEqualTo(1);
         assertThat(productId).isEqualTo(1);
-        assertThat(color).isEqualTo("white");
-        assertThat(size).isEqualTo("S");
-        assertThat(stock).isEqualTo(20);
+        assertThat(color).isEqualTo("Blue");
+        assertThat(size).isEqualTo("M");
+        assertThat(stock).isEqualTo(15);
     }
 
     @Test 
@@ -58,5 +57,4 @@ public class ProductVariantTests {
         assertThat(size).isEqualTo("S");
         assertThat(stock).isEqualTo(20);
     }
-    */
 }
