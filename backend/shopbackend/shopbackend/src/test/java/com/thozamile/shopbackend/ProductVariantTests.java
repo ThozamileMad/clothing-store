@@ -2,6 +2,8 @@ package com.thozamile.shopbackend;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.thozamile.shopbackend.entity.ProductVariant;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.URI;
 
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,7 +30,7 @@ public class ProductVariantTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        Number productId = documentContext.read("$.product_id");
+        Number productId = documentContext.read("$.productId");
         String color = documentContext.read("$.color");
         String size = documentContext.read("$.size");
         Number stock = documentContext.read("$.stock");
@@ -46,15 +50,33 @@ public class ProductVariantTests {
 
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         Number id = documentContext.read("$.id");
-        Number productId = documentContext.read("$.product_id");
+        Number productId = documentContext.read("$.productId");
         String color = documentContext.read("$.color");
         String size = documentContext.read("$.size");
         Number stock = documentContext.read("$.stock");
 
         assertThat(id).isEqualTo(1);
         assertThat(productId).isEqualTo(1);
-        assertThat(color).isEqualTo("white");
-        assertThat(size).isEqualTo("S");
-        assertThat(stock).isEqualTo(20);
+        assertThat(color).isEqualTo("Blue");
+        assertThat(size).isEqualTo("M");
+        assertThat(stock).isEqualTo(15);
+    }
+
+    @Test
+    void createProductVariant() {
+        ProductVariant newProductVariant = new ProductVariant(
+            null, 
+            1L, 
+            "Purple", 
+            "XL", 
+            50
+        );
+        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/products/variants", newProductVariant, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI location = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> getResponse = restTemplate.getForEntity(location, String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);   
     }
 }
+

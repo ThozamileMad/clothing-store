@@ -1,74 +1,73 @@
 package com.thozamile.shopbackend.controller;
 
-import java.time.LocalDateTime;
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import com.thozamile.shopbackend.example.ProductReview;
+import com.thozamile.shopbackend.entity.ProductReview;
+import com.thozamile.shopbackend.entity.ProductReview;
+import com.thozamile.shopbackend.repository.ProductReviewRepository;
 
 @RestController
 @RequestMapping("/products/reviews")
 public class ProductReviewController {
+    private final ProductReviewRepository productReviewRepository;
 
+    private ProductReviewController(ProductReviewRepository productReviewRepository) {
+        this.productReviewRepository = productReviewRepository;
+    }
+    
     @GetMapping("/{requestedId}")
-    private ResponseEntity<ProductReview> getProductReviewById(@PathVariable Long requestedId) {
-        if (requestedId == null) {
+    private ResponseEntity<ProductReview> findById(@PathVariable Long requestedId) {
+        Optional<ProductReview> productReview = productReviewRepository.findById(requestedId);
+        if (productReview.isPresent()) {
+            return ResponseEntity.ok(productReview.get());
+        } else {
             return ResponseEntity.notFound().build();
         }
-        
-        ProductReview productReview = new ProductReview(
-            requestedId,
-            1L,
-            // 1L, User ID
-            4.5,
-            "Amazing Product!!!",
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45),
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45)
-        );
-
-        return ResponseEntity.ok(productReview);
     }
 
     @GetMapping("/product_id/{requestedProductId}")
-    private ResponseEntity<ProductReview> getProductReviewByProductId(@PathVariable Long requestedProductId) {
-        if (requestedProductId == null) {
+    private ResponseEntity<ProductReview> findByProductId(@PathVariable Long requestedProductId) {
+        List<ProductReview> productReviews = productReviewRepository.findByProductId(requestedProductId);
+        if (!productReviews.isEmpty()) {
+            return ResponseEntity.ok(productReviews.get(0));
+        } else {
             return ResponseEntity.notFound().build();
         }
-        
-        ProductReview productReview = new ProductReview(
-            1L,
-            requestedProductId,
-            // 1L, User ID
-            4.5,
-            "Amazing Product!!!",
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45),
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45)
-        );
-
-        return ResponseEntity.ok(productReview);
     }
 
+    /* 
     @GetMapping("/user_id/{requestedUserId}")
     private ResponseEntity<ProductReview> getProductReviewByUserId(@PathVariable Long requestedUserId) {
-        if (requestedUserId == null) {
+        List<ProductReview> productReviews = productReviewRepository.findByUserId(requestedUserId);
+        if (productReviews.isEmpty()) {
+            return ResponseEntity.ok(productReviews.get(0));
+        } else {
             return ResponseEntity.notFound().build();
         }
-        
-        ProductReview productReview = new ProductReview(
-            1L,
-            1L,
-            // requestedUserId, User ID
-            4.5,
-            "Amazing Product!!!",
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45),
-            LocalDateTime.of(2026, 7, 18, 9, 36, 45)
-        );
-
-        return ResponseEntity.ok(productReview);
     }
-    
+    */
+
+    @PostMapping
+    private ResponseEntity<Void> createProductReview(
+        @RequestBody ProductReview newProductReviewRequest, 
+        UriComponentsBuilder ucb
+    ) {
+        ProductReview savedProductReview = productReviewRepository.save(newProductReviewRequest);
+        URI locationOfNewProductReview = ucb
+            .path("products/reviews/{id}")
+            .buildAndExpand(savedProductReview.id())
+            .toUri();
+        return ResponseEntity.created(locationOfNewProductReview).build();
+    }
 }

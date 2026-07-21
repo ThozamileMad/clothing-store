@@ -2,6 +2,7 @@ package com.thozamile.shopbackend;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.thozamile.shopbackend.entity.Product;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.URI;
 
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,10 +44,22 @@ class ProductTests {
         assertThat(description).isEqualTo("Comfortable baggy fit jeans with a relaxed feel.");
 	}
 
-    void getNonExistingProduct() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/2", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isEmpty();
+    @Test
+    void createProduct() {
+        Product newProduct = new Product(
+            null, 
+            1L, 
+            1L, 
+            "Flamingo Shirt", 
+            120.00, 
+            "Comfortable and colorful shirt with a relaxed feel."
+        );
+        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/products", newProduct, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI location = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> getResponse = restTemplate.getForEntity(location, String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);   
     }
 
 }

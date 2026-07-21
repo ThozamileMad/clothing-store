@@ -1,14 +1,19 @@
 package com.thozamile.shopbackend.controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.thozamile.shopbackend.entity.ProductVariant;
 import com.thozamile.shopbackend.entity.ProductVariant;
 import com.thozamile.shopbackend.repository.ProductVariantRepository;
 
@@ -40,6 +45,19 @@ public class ProductVariantController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping
+    private ResponseEntity<Void> createProductVariant(
+        @RequestBody ProductVariant newProductVariantRequest, 
+        UriComponentsBuilder ucb
+    ) {
+        ProductVariant savedProductVariant = productVariantRepository.save(newProductVariantRequest);
+        URI locationOfNewProductVariant = ucb
+            .path("products/variants/{id}")
+            .buildAndExpand(savedProductVariant.id())
+            .toUri();
+        return ResponseEntity.created(locationOfNewProductVariant).build();
     }
     
 }

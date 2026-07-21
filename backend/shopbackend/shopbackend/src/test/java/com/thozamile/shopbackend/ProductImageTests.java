@@ -2,6 +2,9 @@ package com.thozamile.shopbackend;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.thozamile.shopbackend.entity.Product;
+import com.thozamile.shopbackend.entity.ProductImage;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.net.URI;
 
 @AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -52,5 +57,21 @@ public class ProductImageTests {
         assertThat(productId).isEqualTo(1);
         assertThat(url).isEqualTo("https://example.com/images/baggy-jeans-1.jpg");
         assertThat(displayOrder).isEqualTo(1);
+    }
+
+    @Test
+    void createProductImage() {
+        ProductImage newProductImage = new ProductImage(
+            null, 
+            1L,
+            "https://example.com/images/flamingo-shirt-1.jpg",
+            1
+        );
+        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/products/images", newProductImage, Void.class);
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        URI location = createResponse.getHeaders().getLocation();
+        ResponseEntity<String> getResponse = restTemplate.getForEntity(location, String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);   
     }
 }
