@@ -41,14 +41,30 @@ VALUES (2, 'https://example.com/images/slim-tee-1.jpg', 1);
 INSERT INTO product_image (product_id, url, display_order)
 VALUES (3, 'https://example.com/images/denim-jacket-1.jpg', 1);
 
-INSERT INTO product_review (product_id, rating, comment)
-VALUES (1, 4.5, 'Great fit, very comfortable for everyday wear.');
+INSERT INTO app_user (username, email, password_hash) VALUES ('ThaboNkosi', 'thabo.nkosi@example.com', '$2a$10$examplehashvalUe1');
+INSERT INTO app_user (username, email, password_hash) VALUES ('LeratoDlamini', 'lerato.dlamini@example.com', '$2a$10$examplehashvalue2');
+INSERT INTO app_user (username, email, password_hash) VALUES ('SiphoMahlangu', 'sipho.mahlangu@example.com', '$2a$10$examplehashvalue3');
 
-INSERT INTO product_review (product_id, rating, comment)
-VALUES (1, 3.5, 'Good jeans but sizing runs a bit large.');
+INSERT INTO product_review (product_id, user_id, rating, comment)
+VALUES (1, 1, 4.5, 'Great fit, very comfortable for everyday wear.');
 
-INSERT INTO product_review (product_id, rating, comment)
-VALUES (2, 5.0, 'Perfect fit and great material quality.');
+INSERT INTO product_review (product_id, user_id, rating, comment)
+VALUES (1, 2, 3.5, 'Good jeans but sizing runs a bit large.');
 
-INSERT INTO product_review (product_id, rating, comment)
-VALUES (3, 4.0, 'Solid jacket, a bit pricey but worth it.');
+INSERT INTO product_review (product_id, user_id, rating, comment)
+VALUES (2, 3, 5.0, 'Perfect fit and great material quality.');
+
+INSERT INTO product_review (product_id, user_id, rating, comment)
+VALUES (3, 1, 4.0, 'Solid jacket, a bit pricey but worth it.');
+
+INSERT INTO sale (user_id, variant_id, quantity, unit_price, total_price)
+VALUES (1, 1, 1, 80.99, 80.99);
+
+INSERT INTO sale (user_id, variant_id, quantity, unit_price, total_price)
+VALUES (2, 3, 2, 25.50, 51.00);
+
+INSERT INTO sale (user_id, variant_id, quantity, unit_price, total_price)
+VALUES (3, 4, 1, 120.00, 120.00);
+
+INSERT INTO sale (user_id, variant_id, quantity, unit_price, total_price)
+VALUES (1, 2, 1, 80.99, 80.99);

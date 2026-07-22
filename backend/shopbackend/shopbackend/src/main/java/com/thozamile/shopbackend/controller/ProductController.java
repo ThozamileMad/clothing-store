@@ -1,5 +1,10 @@
 package com.thozamile.shopbackend.controller;
 
+import org.apache.catalina.connector.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import com.thozamile.shopbackend.entity.Product;
@@ -32,6 +38,24 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    private ResponseEntity<List<Product>> getAllProducts(Pageable pageable) {
+        Page<Product> page = productRepository.findAll(
+            PageRequest.of(
+                pageable.getPageNumber(), 
+                pageable.getPageSize(),
+                //pageable.getSort()
+                pageable.getSortOr(
+                    Sort.by(
+                        Sort.Direction.ASC, 
+                        "id"
+                    )
+                )
+            )
+        );
+        return ResponseEntity.ok(page.getContent());
     }
 
     @PostMapping
