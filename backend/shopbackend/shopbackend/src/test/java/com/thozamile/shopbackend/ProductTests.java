@@ -29,7 +29,8 @@ class ProductTests {
 
 	//@Test
 	void getProduct() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/1", String.class);
+        ResponseEntity<String> response = 
+            restTemplate.getForEntity("/products/1", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
 
@@ -60,7 +61,11 @@ class ProductTests {
             120.00, 
             "Comfortable and colorful shirt with a relaxed feel."
         );
-        ResponseEntity<Void> createResponse = restTemplate.postForEntity("/products", newProduct, Void.class);
+        ResponseEntity<Void> createResponse = 
+            restTemplate
+                .withBasicAuth("ThaboNkosi", "ThaboNkosi@2")
+                .postForEntity("/products", newProduct, Void.class);
+        
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         URI location = createResponse.getHeaders().getLocation();

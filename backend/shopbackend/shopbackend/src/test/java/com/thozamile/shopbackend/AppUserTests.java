@@ -29,6 +29,7 @@ public class AppUserTests {
     void isAuthenticated() {
         ResponseEntity<String> response = 
             restTemplate
+                .withBasicAuth("ThaboNkosi", "ThaboNkosi@2")
                 .getForEntity(
                     "/users/is_authenticated", 
                     String.class
@@ -44,13 +45,15 @@ public class AppUserTests {
             4L, 
             "ThozamileMadela", 
             "thozamile.madela@example.com", 
-            "ThozamileMadela@2"
+            "ThozamileMadela@2",
+            null
         );
 
         ResponseEntity<Void> postResponse = 
             restTemplate
+                .withBasicAuth("LeratoDlamini", "LeratoDlamini@2")
                 .postForEntity(
-                    "users/sign_up", 
+                    "/users/sign_up", 
                     newAppUser, 
                     Void.class
                 );
@@ -59,6 +62,7 @@ public class AppUserTests {
         URI locationOfAppUser = postResponse.getHeaders().getLocation();
         ResponseEntity<String> getResponse = 
             restTemplate
+                .withBasicAuth("LeratoDlamini", "LeratoDlamini@2")
                 .getForEntity(
                     locationOfAppUser, 
                     String.class
@@ -73,13 +77,15 @@ public class AppUserTests {
             null, 
             null, 
             "thabo.nkosi@example.com", 
-            "$2a$10$examplehashvalUe1"
+            "ThaboNkosi@2",
+            null
         );
 
         ResponseEntity<String> postResponse = 
             restTemplate
+                .withBasicAuth("ThaboNkosi", "ThaboNkosi@2")
                 .postForEntity(
-                    "users/sign_in", 
+                    "/users/sign_in", 
                     newAppUser, 
                     String.class
                 );

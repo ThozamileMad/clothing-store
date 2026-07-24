@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +19,13 @@ import com.thozamile.shopbackend.repository.AppUserRepository;
 @RestController
 @RequestMapping("/users")
 public class AppUserController {
-    private AppUserRepository appUserRepository;
+    private final AppUserRepository appUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private AppUserController(AppUserRepository appUserRepository) {
+
+    private AppUserController(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/is_authenticated")
@@ -49,26 +53,26 @@ public class AppUserController {
         
         String providedUsername = appUserRequest.username();
         String providedEmail = appUserRequest.email();
-        String providedPasswordHash = appUserRequest.passwordHash();
+        String providedPassword = appUserRequest.passwordHash();
 
         if (
             providedUsername == null ||
             providedEmail == null ||
-            providedPasswordHash == null 
+            providedPassword == null 
         ) {
             return ResponseEntity.badRequest().build();
         }
 
         providedUsername = providedUsername.trim();
         providedEmail = providedEmail.trim();
-        providedPasswordHash = providedPasswordHash.trim();
+        providedPassword = providedPassword.trim();
 
         // Emptiness Check
 
         if (
             providedUsername.isBlank() ||
             providedEmail.isBlank() ||
-            providedPasswordHash.isBlank()
+            providedPassword.isBlank()
         ) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,10 +83,10 @@ public class AppUserController {
             !providedUsername.matches("^[A-Za-z\\d]+$") ||
             !providedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ||
             !(
-                providedPasswordHash.matches(".*[A-Z].*") &&
-                providedPasswordHash.matches(".*[a-z].*") &&
-                providedPasswordHash.matches(".*[\\d].*") &&
-                providedPasswordHash.matches(".*[\\W].*") 
+                providedPassword.matches(".*[A-Z].*") &&
+                providedPassword.matches(".*[a-z].*") &&
+                providedPassword.matches(".*[\\d].*") &&
+                providedPassword.matches(".*[\\W].*") 
             )
         ) {
             return ResponseEntity.badRequest().build();
@@ -99,8 +103,8 @@ public class AppUserController {
                 providedEmail.length() > 255 
               ||
             (
-                providedPasswordHash.length() <= 8 && 
-                providedPasswordHash.length() > 255
+                providedPassword.length() <= 8 && 
+                providedPassword.length() > 255
             )
         ) {
             return ResponseEntity.badRequest().build();
@@ -116,7 +120,14 @@ public class AppUserController {
 
         // Authentication 
 
-        AppUser newAppUser = appUserRepository.save(appUserRequest);
+        AppUser newAppUser = new AppUser(
+            null, 
+            providedUsername, 
+            providedEmail, 
+            passwordEncoder.encode(providedPassword),
+            null
+        );
+        newAppUser = appUserRepository.save(appUserRequest);
 
         // authenticate() // non-existing function stores generated auth token
 
@@ -140,18 +151,18 @@ public class AppUserController {
         }
         
         String providedEmail = appUserRequest.email();
-        String providedPasswordHash = appUserRequest.passwordHash();
+        String providedPassword = appUserRequest.passwordHash();
 
-        if (providedEmail == null || providedPasswordHash == null) {
+        if (providedEmail == null || providedPassword == null) {
             return ResponseEntity.badRequest().build();
         }
 
         providedEmail = providedEmail.trim();
-        providedPasswordHash = providedPasswordHash.trim();
+        providedPassword = providedPassword.trim();
 
         // Emptiness Check
 
-        if (providedEmail.isBlank() || providedPasswordHash.isBlank()) {
+        if (providedEmail.isBlank() || providedPassword.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -160,10 +171,10 @@ public class AppUserController {
         if (
             !providedEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") ||
             !(
-                providedPasswordHash.matches(".*[A-Z].*") &&
-                providedPasswordHash.matches(".*[a-z].*") &&
-                providedPasswordHash.matches(".*[\\d].*") &&
-                providedPasswordHash.matches(".*[\\W].*") 
+                providedPassword.matches(".*[A-Z].*") &&
+                providedPassword.matches(".*[a-z].*") &&
+                providedPassword.matches(".*[\\d].*") &&
+                providedPassword.matches(".*[\\W].*") 
             )
         ) {
             return ResponseEntity.badRequest().build();
@@ -174,8 +185,8 @@ public class AppUserController {
         if (
             providedEmail.length() > 255 ||
             (
-                providedPasswordHash.length() <= 8 && 
-                providedPasswordHash.length() > 255
+                providedPassword.length() <= 8 && 
+                providedPassword.length() > 255
             )
         ) {
             return ResponseEntity.badRequest().build();
@@ -189,13 +200,9 @@ public class AppUserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     
-        boolean nonExistentPasswordHash =
-            !existingUser
-                .get()
-                .passwordHash()
-                .equals(
-                    providedPasswordHash
-                ); 
+        String storedPassword = existingUser.get().passwordHash();
+        boolean nonExistentPasswordHash = !passwordEncoder.matches(providedPassword, storedPassword);
+                
         
         if (nonExistentPasswordHash) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

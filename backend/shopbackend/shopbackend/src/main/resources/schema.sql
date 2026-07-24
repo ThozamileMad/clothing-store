@@ -51,8 +51,11 @@ CREATE TABLE app_user (
     username       VARCHAR(255) UNIQUE NOT NULL,
     email          VARCHAR(255) UNIQUE NOT NULL,
     password_hash  VARCHAR(255) NOT NULL,
+    role           VARCHAR(255) NOT NULL DEFAULT 'user',
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+
+    CONSTRAINT role_check CHECK (role IN ('user', 'admin'))
 );
 
 CREATE TABLE product_review (

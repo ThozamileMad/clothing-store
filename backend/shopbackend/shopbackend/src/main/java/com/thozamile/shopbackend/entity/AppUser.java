@@ -6,7 +6,8 @@ public record AppUser(
     @Id Long id,
     String username,
     String email,
-    String passwordHash
+    String passwordHash,
+    String role
 ) {
     
 

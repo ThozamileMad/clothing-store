@@ -41,8 +41,8 @@ VALUES (2, 'https://example.com/images/slim-tee-1.jpg', 1);
 INSERT INTO product_image (product_id, url, display_order)
 VALUES (3, 'https://example.com/images/denim-jacket-1.jpg', 1);
 
-INSERT INTO app_user (username, email, password_hash) VALUES ('ThaboNkosi', 'thabo.nkosi@example.com', '$2a$10$examplehashvalUe1');
-INSERT INTO app_user (username, email, password_hash) VALUES ('LeratoDlamini', 'lerato.dlamini@example.com', '$2a$10$examplehashvalue2');
+INSERT INTO app_user (username, email, password_hash) VALUES ('ThaboNkosi', 'thabo.nkosi@example.com', 'ThaboNkosi@2', 'admin');
+INSERT INTO app_user (username, email, password_hash) VALUES ('LeratoDlamini', 'lerato.dlamini@example.com', 'LeratoDlamini@2');
 INSERT INTO app_user (username, email, password_hash) VALUES ('SiphoMahlangu', 'sipho.mahlangu@example.com', '$2a$10$examplehashvalue3');
 
 INSERT INTO product_review (product_id, user_id, rating, comment)

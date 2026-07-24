@@ -14,13 +14,17 @@ import org.springframework.security.config.Customizer;
 
 @Configuration
 public class SecurityConfig {
+
+    @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(
                 request -> 
                     request
-                        .requestMatchers("/products/**")
-                        .authenticated()
+                        .requestMatchers("/admin/**").hasRole("admin")
+                        .requestMatchers("/users/sign_up", "/users/sign_in").permitAll()
+                        .requestMatchers("/users/**").authenticated()
+                        .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable());
@@ -33,16 +37,26 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /* 
     @Bean 
     UserDetailsService testOnlyUsers(PasswordEncoder passwordEncoder) {
         User.UserBuilder users = User.builder();
+
         UserDetails thaboNkosi = 
             users
                 .username("ThaboNkosi")
                 .password(passwordEncoder.encode("ThaboNkosi@2"))
-                .roles()
+                .roles("admin")
                 .build();
 
-        return new InMemoryUserDetailsManager(thaboNkosi);
+        UserDetails LeratoDlamini = 
+            users  
+                .username("LeratoDlamini")
+                .password(passwordEncoder.encode("LeratoDlamini@2"))
+                .roles("user")
+                .build();
+
+        return new InMemoryUserDetailsManager(thaboNkosi, LeratoDlamini);
     }
+    */
 }
