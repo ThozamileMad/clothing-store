@@ -55,12 +55,17 @@ class ProductTests {
     void createProduct() {
         Product newProduct = new Product(
             null, 
+            1L,
             1L, 
-            1L, 
-            "Flamingo Shirt", 
+            "FLamingo Shirt", 
             120.00, 
-            "Comfortable and colorful shirt with a relaxed feel."
+            "Just a shirt.s", 
+            null, 
+            null, 
+            null, 
+            null
         );
+
         ResponseEntity<Void> createResponse = 
             restTemplate
                 .withBasicAuth("ThaboNkosi", "ThaboNkosi@2")
@@ -92,6 +97,34 @@ class ProductTests {
 
         int id = documentContext.read("$.[0].id");
         assertThat(id).isEqualTo(3);
+    }
+
+    @Test 
+    void findAllByOrderByCreatedAtAsc() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/new_arrivals?page=0&size=1", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+        JSONArray page = documentContext.read("$.[*]");
+        String name = documentContext.read("$.[0].name");
+
+        assertThat(page.size()).isEqualTo(1);
+        assertThat(name).isEqualTo("Baggy Jeans");
+    }
+
+    @Test 
+    void findAllByOrderByProfitDesc() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/top_selling?page=0&size=1", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+        JSONArray page = documentContext.read("$.[*]");
+        Double revenue = documentContext.read("$.[0].revenue");
+
+        assertThat(page.size()).isEqualTo(1);
+        assertThat(revenue).isEqualTo(120.00);
     }
 
 }

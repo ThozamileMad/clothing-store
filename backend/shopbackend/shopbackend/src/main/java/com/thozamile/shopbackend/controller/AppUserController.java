@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,15 +25,21 @@ import com.thozamile.shopbackend.repository.AppUserRepository;
 public class AppUserController {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
 
-    private AppUserController(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+    public AppUserController(
+        AppUserRepository appUserRepository, 
+        PasswordEncoder passwordEncoder,
+        AuthenticationManager authenticationManager
+    ) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/is_authenticated")
-    private ResponseEntity<AppUser> isAuthenticated() {
+    public ResponseEntity<AppUser> isAuthenticated() {
         Optional<AppUser> currentUser = appUserRepository.findById(1L);
 
         if (currentUser.isPresent()) {
@@ -40,7 +50,7 @@ public class AppUserController {
     }
 
     @PostMapping("/sign_up")
-    private ResponseEntity<Void> signUp(
+    public ResponseEntity<Void> signUp(
         @RequestBody AppUser appUserRequest,
         UriComponentsBuilder ucb
     ) {        
@@ -120,14 +130,14 @@ public class AppUserController {
 
         // Authentication 
 
-        AppUser newAppUser = new AppUser(
+        AppUser savedAppUser = new AppUser(
             null, 
             providedUsername, 
             providedEmail, 
             passwordEncoder.encode(providedPassword),
-            null
+            "user"
         );
-        newAppUser = appUserRepository.save(appUserRequest);
+        AppUser newAppUser = appUserRepository.save(savedAppUser);
 
         // authenticate() // non-existing function stores generated auth token
 
@@ -140,7 +150,7 @@ public class AppUserController {
     }
 
     @PostMapping("/sign_in")
-    private ResponseEntity<AppUser> signIn(
+    public ResponseEntity<String> signIn(
         @RequestBody AppUser appUserRequest,
         UriComponentsBuilder ucb
     ) {
@@ -194,22 +204,13 @@ public class AppUserController {
 
         // DB Match Check
 
-        Optional<AppUser> existingUser = appUserRepository.findByEmail(providedEmail);
-
-        if (!existingUser.isPresent()) {
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(providedEmail, providedPassword)
+            );
+            return ResponseEntity.ok("Successful");
+        } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-    
-        String storedPassword = existingUser.get().passwordHash();
-        boolean nonExistentPasswordHash = !passwordEncoder.matches(providedPassword, storedPassword);
-                
-        
-        if (nonExistentPasswordHash) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        // authenticate() // non-existing function stores generated auth token
-
-        return ResponseEntity.ok(existingUser.get());
     }
 }

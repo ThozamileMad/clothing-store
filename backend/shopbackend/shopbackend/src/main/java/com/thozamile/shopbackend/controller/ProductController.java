@@ -31,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping("/{requestedId}")
-    private ResponseEntity<Product> getProductById(@PathVariable Long requestedId) {
+    private ResponseEntity<Product> findById(@PathVariable Long requestedId) {
         Optional<Product> productOptional = productRepository.findById(requestedId);
         if (productOptional.isPresent()) {
             return ResponseEntity.ok(productOptional.get());
@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping
-    private ResponseEntity<List<Product>> getAllProducts(Pageable pageable) {
+    private ResponseEntity<List<Product>> findAll(Pageable pageable) {
         Page<Product> page = productRepository.findAll(
             PageRequest.of(
                 pageable.getPageNumber(), 
@@ -58,8 +58,41 @@ public class ProductController {
         return ResponseEntity.ok(page.getContent());
     }
 
+    @GetMapping("/new_arrivals")
+    ResponseEntity<List<Product>> findAllByOrderByCreatedAtAsc(Pageable pageable) {
+        List<Product> products = productRepository.findAllByOrderByCreatedAtAsc(
+            PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+            )
+        );
+
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(products);
+        }
+    }
+
+    @GetMapping("/top_selling")
+    ResponseEntity<List<Product>> findAllByOrderByRevenueDesc(Pageable pageable) {
+        List<Product> products = productRepository.findAllByOrderByRevenueDesc(
+            PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+            )
+        );
+
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(products);
+        }
+    }
+
+
     @PostMapping
-    private ResponseEntity<Void> createProduct(
+    private ResponseEntity<Void> save(
         @RequestBody Product newProductRequest, 
         UriComponentsBuilder ucb
     ) {

@@ -32,7 +32,7 @@ public class AppUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(found.username())
                 .password(found.passwordHash())
-                .roles("user")
+                .roles(found.role())
                 .build();
     }
 }

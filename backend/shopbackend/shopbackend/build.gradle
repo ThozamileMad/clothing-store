@@ -46,6 +46,6 @@ tasks.named('test') {
 		showExceptions true
 		showCauses true
 		showStackTraces false  
-		showStandardStreams = false
+		showStandardStreams = true
 	}
 }
