@@ -36,8 +36,8 @@ public class ProductImageController {
     }
  
     @GetMapping("/product_id/{requestedProductId}")
-    private ResponseEntity<ProductImage> findByProductId(@PathVariable Long requestedProductId) {
-        List<ProductImage> productImage = productImageRepository.findByProductId(requestedProductId);
+    private ResponseEntity<ProductImage> findAllByProductId(@PathVariable Long requestedProductId) {
+        List<ProductImage> productImage = productImageRepository.findAllByProductId(requestedProductId);
         if (!productImage.isEmpty()) {
             return ResponseEntity.ok(productImage.get(0));
         } else {

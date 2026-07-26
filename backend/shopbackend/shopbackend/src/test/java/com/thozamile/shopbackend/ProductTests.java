@@ -108,9 +108,11 @@ class ProductTests {
 
         JSONArray page = documentContext.read("$.[*]");
         String name = documentContext.read("$.[0].name");
+        Number price = documentContext.read("[0].price");
 
         assertThat(page.size()).isEqualTo(1);
-        assertThat(name).isEqualTo("Baggy Jeans");
+        assertThat(name).isEqualTo("Regular Denim Jacket");
+        assertThat(price).isEqualTo(120);
     }
 
     @Test 
@@ -121,10 +123,12 @@ class ProductTests {
         DocumentContext documentContext = JsonPath.parse(response.getBody());
 
         JSONArray page = documentContext.read("$.[*]");
-        Double revenue = documentContext.read("$.[0].revenue");
+        String name = documentContext.read("$.[0].name");
+        Number price = documentContext.read("[0].price");
 
         assertThat(page.size()).isEqualTo(1);
-        assertThat(revenue).isEqualTo(120.00);
+        assertThat(name).isEqualTo("Regular Denim Jacket");
+        assertThat(price).isEqualTo(120);
     }
 
 }

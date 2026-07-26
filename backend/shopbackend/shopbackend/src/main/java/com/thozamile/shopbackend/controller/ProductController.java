@@ -15,19 +15,33 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.thozamile.shopbackend.entity.Product;
+import com.thozamile.shopbackend.entity.ProductFeature;
+import com.thozamile.shopbackend.entity.ProductImage;
+import com.thozamile.shopbackend.entity.ProductReview;
+import com.thozamile.shopbackend.repository.ProductImageRepository;
 import com.thozamile.shopbackend.repository.ProductRepository;
+import com.thozamile.shopbackend.repository.ProductReviewRepository;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ProductReviewRepository productReviewRepository;
 
-    private ProductController(ProductRepository productRepository) {
+    private ProductController(
+        ProductRepository productRepository, 
+        ProductImageRepository productImageRepository,
+        ProductReviewRepository productReviewRepository
+    ) {
         this.productRepository = productRepository;
+        this.productImageRepository = productImageRepository;
+        this.productReviewRepository = productReviewRepository;
     }
 
     @GetMapping("/{requestedId}")
@@ -59,8 +73,8 @@ public class ProductController {
     }
 
     @GetMapping("/new_arrivals")
-    ResponseEntity<List<Product>> findAllByOrderByCreatedAtAsc(Pageable pageable) {
-        List<Product> products = productRepository.findAllByOrderByCreatedAtAsc(
+    ResponseEntity<List<ProductFeature>> findAllByOrderByCreatedAtDesc(Pageable pageable) {
+        List<Product> products = productRepository.findAllByOrderByCreatedAtDesc(
             PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize()
@@ -69,9 +83,26 @@ public class ProductController {
 
         if (products.isEmpty()) {
             return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(products);
+        } 
+
+        List<ProductFeature> productFeatures = new ArrayList<>();
+        for (Product p : products) {
+            List<ProductImage> images = productImageRepository.findAllByProductId(p.id());
+            List<ProductReview> reviews = productReviewRepository.findAllByAverageRating(p.id());
+
+            productFeatures.add(new ProductFeature(
+                p, 
+                reviews, 
+                images, 
+                null, 
+                null, 
+                null
+            ));
         }
+
+        return ResponseEntity.ok(productFeatures);
+
+        
     }
 
     @GetMapping("/top_selling")

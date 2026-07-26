@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.thozamile.shopbackend.entity.ProductImage;
 
 public interface ProductImageRepository extends CrudRepository<ProductImage, Long> {
-    List<ProductImage> findByProductId(Long productId); 
+    List<ProductImage> findAllByProductId(Long productId); 
 }
