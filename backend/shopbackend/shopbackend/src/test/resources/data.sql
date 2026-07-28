@@ -8,14 +8,14 @@ INSERT INTO dress_type (name) VALUES ('T-Shirt');
 INSERT INTO dress_type (name) VALUES ('Jacket');
 
 
-INSERT INTO product (style_id, type_id, name, price, description)
-VALUES (1, 1, 'Baggy Jeans', 80.99, 'Comfortable baggy fit jeans with a relaxed feel.');
+INSERT INTO product (style_id, type_id, name, price, description, created_at, updated_at)
+VALUES (1, 1, 'Baggy Jeans', 80.99, 'Comfortable baggy fit jeans with a relaxed feel.', '2026-07-01 09:00:00', '2026-07-01 09:00:00');
 
-INSERT INTO product (style_id, type_id, name, price, description)
-VALUES (2, 2, 'Slim Fit Tee', 25.50, 'A classic slim fit t-shirt, soft cotton blend.');
+INSERT INTO product (style_id, type_id, name, price, description, created_at, updated_at)
+VALUES (2, 2, 'Slim Fit Tee', 25.50, 'A classic slim fit t-shirt, soft cotton blend.', '2026-07-05 14:30:00', '2026-07-05 14:30:00');
 
-INSERT INTO product (style_id, type_id, name, price, description)
-VALUES (3, 3, 'Regular Denim Jacket', 120.00, 'A timeless denim jacket for everyday wear.');
+INSERT INTO product (style_id, type_id, name, price, description, created_at, updated_at)
+VALUES (3, 3, 'Regular Denim Jacket', 120.00, 'A timeless denim jacket for everyday wear.', '2026-07-10 11:15:00', '2026-07-10 11:15:00');
 
 INSERT INTO product_variant (product_id, color, size, stock)
 VALUES (1, 'Blue', 'M', 15);

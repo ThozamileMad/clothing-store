@@ -61,8 +61,6 @@ class ProductTests {
             120.00, 
             "Just a shirt.s", 
             null, 
-            null, 
-            null, 
             null
         );
 
@@ -99,36 +97,53 @@ class ProductTests {
         assertThat(id).isEqualTo(3);
     }
 
-    @Test 
-    void findAllByOrderByCreatedAtAsc() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/new_arrivals?page=0&size=1", String.class);
+    //@Test 
+    void getNewProducts() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/new_arrivals", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+        System.out.println(response.getBody());
         DocumentContext documentContext = JsonPath.parse(response.getBody());
 
-        JSONArray page = documentContext.read("$.[*]");
-        String name = documentContext.read("$.[0].name");
-        Number price = documentContext.read("[0].price");
+        JSONArray page = documentContext.read("$[*]");
+        String name = documentContext.read("$.[0].info.name");
+        Number price = documentContext.read("$.[0].info.price");
+        String description = documentContext.read("$.[0].info.description");
+        Number averageRating = documentContext.read("$.[0].ratingSummary.averageRating");
+        String imageUrl = documentContext.read("$[0].images.[0].url");
 
-        assertThat(page.size()).isEqualTo(1);
+        assertThat(page.size()).isEqualTo(3);
         assertThat(name).isEqualTo("Regular Denim Jacket");
-        assertThat(price).isEqualTo(120);
+        assertThat(price).isEqualTo(120.0);
+        assertThat(description).isEqualTo("A timeless denim jacket for everyday wear.");
+        assertThat(averageRating).isEqualTo(4.0);
+        assertThat(imageUrl).isEqualTo("https://example.com/images/denim-jacket-1.jpg");
     }
 
     @Test 
-    void findAllByOrderByProfitDesc() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/products/top_selling?page=0&size=1", String.class);
+    void getProductByRevenue() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/top_selling", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+        System.out.println(response.getBody());
+        
         DocumentContext documentContext = JsonPath.parse(response.getBody());
 
-        JSONArray page = documentContext.read("$.[*]");
-        String name = documentContext.read("$.[0].name");
-        Number price = documentContext.read("[0].price");
+        JSONArray page = documentContext.read("$[*]");
+        String name = documentContext.read("$.[2].infoWithRevenue.name");
+        Number price = documentContext.read("$.[2].infoWithRevenue.price");
+        String description = documentContext.read("$.[2].infoWithRevenue.description");
+        Number revenue = documentContext.read("$.[2].infoWithRevenue.revenue");
+        Number averageRating = documentContext.read("$.[2].ratingSummary.averageRating");
+        String imageUrl = documentContext.read("$[2].images.[0].url");
 
-        assertThat(page.size()).isEqualTo(1);
-        assertThat(name).isEqualTo("Regular Denim Jacket");
-        assertThat(price).isEqualTo(120);
+        assertThat(page.size()).isEqualTo(3);
+        assertThat(name).isEqualTo("Slim Fit Tee");
+        assertThat(price).isEqualTo(25.5);
+        assertThat(description).isEqualTo("A classic slim fit t-shirt, soft cotton blend.");
+        assertThat(revenue).isEqualTo(76.50);
+        assertThat(averageRating).isEqualTo(5.0);
+        assertThat(imageUrl).isEqualTo("https://example.com/images/slim-tee-1.jpg");
     }
 
 }

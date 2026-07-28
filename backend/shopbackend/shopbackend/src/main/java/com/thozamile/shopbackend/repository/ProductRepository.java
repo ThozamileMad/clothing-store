@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.thozamile.shopbackend.entity.Product;
+import com.thozamile.shopbackend.entity.ProductWithRevenue;
 
 public interface ProductRepository 
     extends 
@@ -16,11 +18,26 @@ public interface ProductRepository
 {
     @Query("""
         SELECT 
+            id,
             name, 
             price,
             description
         FROM product
-        ORDER BY p.created_at DESC
+        ORDER BY created_at DESC
     """)
     List<Product> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("""
+        SELECT 
+            p.id,
+            p.name, 
+            p.price,
+            p.description,
+            COALESCE(SUM(s.total_price), 0) AS revenue
+        FROM product p
+        JOIN sale s ON s.product_id = p.id
+        GROUP BY p.id
+        ORDER BY revenue DESC
+    """)
+    List<ProductWithRevenue> findAllByOrderByRevenueDesc(Pageable pageable);
 }

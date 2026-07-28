@@ -7,18 +7,17 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.thozamile.shopbackend.entity.ProductReview;
+import com.thozamile.shopbackend.entity.ProductRatingSummary;
 
 public interface ProductReviewRepository extends CrudRepository<ProductReview, Long> {
     List<ProductReview> findByProductId(Long productId);
 
     @Query("""
         SELECT 
-            product_id,
-            AVG(rating) AS averageRating
-            COUNT(*) AS reviewCount
-        FROM product_review 
+            AVG(rating) AS average_rating
+        FROM product_review
         WHERE product_id = :productId
         GROUP BY product_id
     """)
-    List<ProductReview> findAllByAverageRating(@Param("productId") Long productId);
+    ProductRatingSummary findAllByAverageRating(@Param("productId") Long productId);
 }
