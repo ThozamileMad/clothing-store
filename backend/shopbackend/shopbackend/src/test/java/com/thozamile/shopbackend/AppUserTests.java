@@ -46,6 +46,8 @@ public class AppUserTests {
             "ThozamileMadela", 
             "thozamile.madela@example.com", 
             "ThozamileMadela@2",
+            "Thozamile",
+            "Madela",
             "user"
         );
 
@@ -77,6 +79,8 @@ public class AppUserTests {
             null, 
             "lerato.dlamini@example.com", 
             "LeratoDlamini@2",
+            "Lerato",
+            "Dlamini",
             null
         );
 

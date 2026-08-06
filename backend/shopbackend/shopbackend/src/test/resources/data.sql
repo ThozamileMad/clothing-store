@@ -1,6 +1,7 @@
 INSERT INTO dress_style (name) VALUES ('casual');
-INSERT INTO dress_style (name) VALUES ('Slim Fit');
-INSERT INTO dress_style (name) VALUES ('Regular');
+INSERT INTO dress_style (name) VALUES ('formal');
+INSERT INTO dress_style (name) VALUES ('party');
+INSERT INTO dress_style (name) VALUES ('gym');
 
 
 INSERT INTO dress_type (name) VALUES ('jeans');
@@ -41,26 +42,82 @@ VALUES (2, 'https://example.com/images/slim-tee-1.jpg', 1);
 INSERT INTO product_image (product_id, url, display_order)
 VALUES (3, 'https://example.com/images/denim-jacket-1.jpg', 1);
 
-INSERT INTO app_user (username, email, password_hash, role) 
-VALUES ('ThaboNkosi', 'thabo.nkosi@example.com', '$2b$10$EVTefnKr1DBeXu6XOGXSduN8AAXWq87unyLRIHP3gyLvWZ0GTUOKa', 'admin');
+INSERT INTO app_user (username, email, password_hash, first_name, last_name, role) 
+VALUES ('ThaboNkosi', 'thabo.nkosi@example.com', '$2b$10$EVTefnKr1DBeXu6XOGXSduN8AAXWq87unyLRIHP3gyLvWZ0GTUOKa', 'Thabo', 'Nkosi', 'admin');
 
-INSERT INTO app_user (username, email, password_hash) 
-VALUES ('LeratoDlamini', 'lerato.dlamini@example.com', '$2b$10$o9wY00vo/.tT1N0rRijfNu05Csx4KyZgHoSr2f5X7XMLOTtjtOSga');
+INSERT INTO app_user (username, email, password_hash, first_name, last_name) 
+VALUES ('LeratoDlamini', 'lerato.dlamini@example.com', '$2b$10$o9wY00vo/.tT1N0rRijfNu05Csx4KyZgHoSr2f5X7XMLOTtjtOSga', 'Lerato', 'Dlamini');
 
-INSERT INTO app_user (username, email, password_hash) 
-VALUES ('SiphoMahlangu', 'sipho.mahlangu@example.com', '$2b$10$FtZC50me.Gzbaf0dvBFTNuDYlnY9B8f.65oKdISqKRJ8OMZ/ZgvS.');
+INSERT INTO app_user (username, email, password_hash, first_name, last_name) 
+VALUES ('SiphoMahlangu', 'sipho.mahlangu@example.com', '$2b$10$FtZC50me.Gzbaf0dvBFTNuDYlnY9B8f.65oKdISqKRJ8OMZ/ZgvS.', 'Sipho', 'Mahlangu');
 
-INSERT INTO product_review (product_id, user_id, rating, comment)
-VALUES (1, 1, 4.5, 'Great fit, very comfortable for everyday wear.');
+INSERT INTO product_review (
+    product_id,
+    user_id,
+    rating,
+    comment,
+    created_at,
+    updated_at
+)
+VALUES (
+    1,
+    1,
+    4.5,
+    'Great fit, very comfortable for everyday wear.',
+    '2026-07-15 09:12:45',
+    '2026-07-15 09:18:10'
+);
 
-INSERT INTO product_review (product_id, user_id, rating, comment)
-VALUES (1, 2, 3.5, 'Good jeans but sizing runs a bit large.');
+INSERT INTO product_review (
+    product_id,
+    user_id,
+    rating,
+    comment,
+    created_at,
+    updated_at
+)
+VALUES (
+    1,
+    2,
+    3.5,
+    'Good jeans but sizing runs a bit large.',
+    '2026-07-18 14:27:03',
+    '2026-07-18 15:01:42'
+);
 
-INSERT INTO product_review (product_id, user_id, rating, comment)
-VALUES (2, 3, 5.0, 'Perfect fit and great material quality.');
+INSERT INTO product_review (
+    product_id,
+    user_id,
+    rating,
+    comment,
+    created_at,
+    updated_at
+)
+VALUES (
+    2,
+    3,
+    5.0,
+    'Perfect fit and great material quality.',
+    '2026-07-22 11:05:18',
+    '2026-07-22 11:05:18'
+);
 
-INSERT INTO product_review (product_id, user_id, rating, comment)
-VALUES (3, 1, 4.0, 'Solid jacket, a bit pricey but worth it.');
+INSERT INTO product_review (
+    product_id,
+    user_id,
+    rating,
+    comment,
+    created_at,
+    updated_at
+)
+VALUES (
+    3,
+    1,
+    4.0,
+    'Solid jacket, a bit pricey but worth it.',
+    '2026-07-28 18:44:56',
+    '2026-07-29 08:13:27'
+);
 
 INSERT INTO sale (user_id, product_id, variant_id, quantity, unit_price, total_price)
 VALUES (1, 1, 1, 1, 80.99, 80.99);

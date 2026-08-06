@@ -7,6 +7,8 @@ public record AppUser(
     String username,
     String email,
     String passwordHash,
+    String firstName,
+    String lastName,
     String role
 ) {
     

@@ -1,8 +1,13 @@
 package com.thozamile.shopbackend.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +30,32 @@ public class DressStyleController {
     }
 
     @GetMapping("/{requestedId}")
-    private ResponseEntity<DressStyle> getDressStyle(@PathVariable Long requestedId) {
+    private ResponseEntity<DressStyle> getDressStyleById(@PathVariable Long requestedId) {
         Optional<DressStyle> dressStyle = dressStyleRepository.findById(requestedId);
         if (dressStyle.isPresent()) {
             return ResponseEntity.ok(dressStyle.get());
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping()
+    private ResponseEntity<List<DressStyle>> getAllDressStyles(Pageable pageable) {
+        Page<DressStyle> dressStyles = dressStyleRepository.findAll(
+            PageRequest.of(
+                pageable.getPageNumber(), 
+                pageable.getPageSize(),
+                pageable.getSortOr(
+                    Sort.by(
+                        Sort.Direction.ASC,
+                        "id"
+                    )
+                )
+            )
+        );
+
+        return ResponseEntity.ok(dressStyles.getContent());
+
     }
 
     @PostMapping 

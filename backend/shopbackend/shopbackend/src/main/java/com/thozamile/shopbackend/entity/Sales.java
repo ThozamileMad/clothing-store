@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 public record Sales(
     @Id Long id,
     Long userId,
+    Long productId,
     Long variantId,
     Integer quantity,
     Double unitPrice,

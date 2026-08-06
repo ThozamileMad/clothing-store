@@ -20,15 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.thozamile.shopbackend.entity.Product;
 import com.thozamile.shopbackend.entity.ProductCard;
+import com.thozamile.shopbackend.entity.ProductColor;
+import com.thozamile.shopbackend.entity.ProductDetailedCard;
+import com.thozamile.shopbackend.entity.Product;
 import com.thozamile.shopbackend.entity.ProductImage;
+import com.thozamile.shopbackend.entity.ProductImageUrl;
 import com.thozamile.shopbackend.entity.ProductRatingSummary;
-import com.thozamile.shopbackend.entity.ProductReview;
-import com.thozamile.shopbackend.entity.ProductWithRevenue;
+import com.thozamile.shopbackend.entity.ProductSize;
+import com.thozamile.shopbackend.entity.ProductVariant;
 import com.thozamile.shopbackend.repository.ProductImageRepository;
 import com.thozamile.shopbackend.repository.ProductRepository;
 import com.thozamile.shopbackend.repository.ProductReviewRepository;
+import com.thozamile.shopbackend.repository.ProductVariantRepository;
 
 @RestController
 @RequestMapping("/products")
@@ -36,15 +40,18 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductReviewRepository productReviewRepository;
+    private final ProductVariantRepository productVariantRepository;
 
     private ProductController(
         ProductRepository productRepository, 
         ProductImageRepository productImageRepository,
-        ProductReviewRepository productReviewRepository
+        ProductReviewRepository productReviewRepository,
+        ProductVariantRepository productVariantRepository
     ) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.productReviewRepository = productReviewRepository;
+        this.productVariantRepository = productVariantRepository;
     }
 
     @GetMapping("/{requestedId}")
@@ -56,6 +63,79 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+
+    @GetMapping("/detailed/{requestedId}")
+    private ResponseEntity<ProductDetailedCard> getDetailedProductById(@PathVariable Long requestedId) {
+        Optional<Product> productOptional = productRepository.findById(requestedId);
+
+        if (!productOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        } 
+
+        Product product = productOptional.get();
+
+        Optional<ProductRatingSummary> ratingSummaryOptional = 
+            productReviewRepository
+                .findAverageRatingByProductId(product.id());
+            
+        List<ProductImageUrl> imageUrls = 
+            productImageRepository
+                .findAllImageUrlsByProductId(product.id());
+
+        List<ProductColor> colors =
+            productVariantRepository
+                .findAllColorsByProductId(product.id());
+            
+        List<ProductSize> sizes =
+            productVariantRepository
+                .findAllSizesByProductId(product.id());
+
+        List<String> mappedUrls = 
+            imageUrls
+                .stream()
+                .map(ProductImageUrl::url)
+                .toList();
+        
+        List<String> mappedColors = 
+            colors
+                .stream()
+                .map(ProductColor::color)
+                .toList();
+
+        List<String> mappedSizes = 
+            sizes
+                .stream()
+                .map(ProductSize::size)
+                .toList();
+        
+        Double ratingSummary = 0.0;
+        if (ratingSummaryOptional.isPresent()) {
+            ratingSummary = ratingSummaryOptional.get().averageRating();
+        }
+
+        if (
+            mappedUrls.isEmpty() ||
+            mappedColors.isEmpty() ||
+            mappedSizes.isEmpty()
+        ) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ProductDetailedCard productDetailedCard = new ProductDetailedCard(
+            product.id(),
+            product.name(),
+            product.description(),
+            product.price(),
+            ratingSummary,
+            mappedUrls,
+            mappedColors,
+            mappedSizes
+        );
+
+        return ResponseEntity.ok(productDetailedCard);
+    }
+
 
     @GetMapping
     private ResponseEntity<List<Product>> getAllProducts(Pageable pageable) {
@@ -84,20 +164,22 @@ public class ProductController {
         if (products.isEmpty()) {
             return ResponseEntity.notFound().build();
         } 
+
         List<ProductCard> productCards = new ArrayList<>();
         for (Product p : products) {
-            List<ProductImage> images = productImageRepository.findAllByProductId(p.id());
-            ProductRatingSummary ratingSummary = productReviewRepository.findAllByAverageRating(p.id());
+            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
+            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
+
+            if (!image.isPresent() || !ratingSummary.isPresent() ) {
+                return ResponseEntity.notFound().build();
+            }
 
             productCards.add(new ProductCard(
-                p, 
-                null,
-                ratingSummary, 
-                images, 
-                null,
-                null, 
-                null, 
-                null
+                p.id(),
+                p.name(),
+                p.price(),
+                image.get().url(),
+                ratingSummary.get().averageRating()
             ));
         }
 
@@ -106,7 +188,7 @@ public class ProductController {
 
     @GetMapping("/top_selling")
     ResponseEntity<List<ProductCard>> getTopSellingProducts(Pageable pageable) {
-        List<ProductWithRevenue> products = productRepository.findAllByOrderByRevenueDesc(
+        List<Product> products = productRepository.findAllByOrderByRevenueDesc(
             PageRequest.of(0, 3)
         );
 
@@ -115,29 +197,28 @@ public class ProductController {
         } 
 
         List<ProductCard> productCards = new ArrayList<>();
-        for (ProductWithRevenue p : products) {
-            List<ProductImage> images = productImageRepository.findAllByProductId(p.id());
-            ProductRatingSummary ratingSummary = productReviewRepository.findAllByAverageRating(p.id());
+        for (Product p : products) {
+            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
+            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
+
+            if (!image.isPresent() || !ratingSummary.isPresent() ) {
+                return ResponseEntity.notFound().build();
+            }
 
             productCards.add(new ProductCard(
-                null, 
-                p,
-                ratingSummary, 
-                images, 
-                null,
-                null, 
-                null, 
-                null
+                p.id(),
+                p.name(),
+                p.price(),
+                image.get().url(),
+                ratingSummary.get().averageRating()
             ));
         }
 
         return ResponseEntity.ok(productCards);
     }
 
+
     /* 
-    
-
-
     @PostMapping
     private ResponseEntity<Void> save(
         @RequestBody Product newProductRequest, 

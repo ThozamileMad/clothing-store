@@ -90,6 +90,30 @@ public class ProductReviewTests {
         assertThat(comment).isEqualTo("Great fit, very comfortable for everyday wear.");
     }
 
+    //@Test 
+    void getAllProductReviewsRandomly() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/reviews/random?size=10", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotEmpty();
+
+        System.out.println(response.getBody());
+    }
+
+    @Test 
+    void getAllProductReviewsIsVerified() {
+        ResponseEntity<String> response = 
+            restTemplate
+                .getForEntity(
+                    "/products/reviews?latest=false&is_verified=false", 
+                    String.class
+                );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotEmpty();
+
+        System.out.println(response.getBody());
+    }
+
     //@Test
     void createProductReview() {
         ProductReview newProductReview = new ProductReview(
@@ -97,7 +121,9 @@ public class ProductReviewTests {
             1L,
             1L, 
             4.0, 
-            "It's okay I guess."
+            "It's okay I guess.",
+            null,
+            null
         );
         ResponseEntity<Void> createResponse = restTemplate.postForEntity("/products/reviews", newProductReview, Void.class);
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);

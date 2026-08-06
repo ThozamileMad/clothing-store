@@ -135,6 +135,8 @@ public class AppUserController {
             providedUsername, 
             providedEmail, 
             passwordEncoder.encode(providedPassword),
+            "Thozamile",
+            "Madela",
             "user"
         );
         AppUser newAppUser = appUserRepository.save(savedAppUser);
