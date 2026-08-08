@@ -66,6 +66,7 @@ CREATE TABLE product_review (
     user_id       BIGINT NOT NULL REFERENCES app_user(id),
     rating        DECIMAL(2,1) NOT NULL DEFAULT 0.0,
     comment       VARCHAR(4000),
+    is_verified   BOOLEAN NOT NULL,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 

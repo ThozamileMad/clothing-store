@@ -86,7 +86,7 @@ public class ProductReviewController {
     @GetMapping("/random")
     private ResponseEntity<List<ProductReviewCard>> getAllProductReviewsRandomly(Pageable pageable) {
         Integer size = pageable.getPageSize();
-        List<ProductReview> productReviews = productReviewRepository.findAllOrderByRandomByDistinct(size);
+        List<ProductReview> productReviews = productReviewRepository.findAllRandomByIsVerified(size);
 
         if (productReviews.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -96,23 +96,16 @@ public class ProductReviewController {
         for (ProductReview pr : productReviews) {
             Optional<AppUser> user = appUserRepository.findById(pr.userId());
             Optional<Product> product = productRepository.findById(pr.productId());
-            
-            if (
-                !user.isPresent() ||
-                !product.isPresent()
-            ) {
-                return ResponseEntity.notFound().build();
-            }
 
             productReviewCards.add(new ProductReviewCard(
                 pr.id(),
                 pr.rating(),
-                user.get().firstName(),
-                user.get().lastName(),
+                user.isPresent() ? user.get().firstName() : null,
+                user.isPresent() ? user.get().lastName() : null,
                 null,
                 pr.comment(),
                 null,
-                product.get().name()
+                product.isPresent() ? product.get().name() : null
             ));
         }
 
@@ -121,67 +114,24 @@ public class ProductReviewController {
 
     @GetMapping
     private ResponseEntity<List<ProductReviewCard>> getAllProductReviewsIsVerified(
-        @RequestParam(name = "latest", defaultValue = "true") Boolean latest,
-        @RequestParam(name = "is_verified", defaultValue = "random") String isVerified,
-        @RequestParam(name = "limit", defaultValue="6") Integer limit
+        Pageable pageable
     ) {
 
-        List<ProductReviewIsVerified> productReviews = new ArrayList<>();
-
-        if (latest && isVerified.equalsIgnoreCase("true")) {
-            productReviews = 
-                productReviewRepository
-                    .findAllIsVerifiedOrderByCreatedAtDesc(
-                        true, 
-                        limit
-                    );
-        }
-        else if (!latest && isVerified.equalsIgnoreCase("false")) {
-            productReviews = 
-                productReviewRepository
-                    .findAllIsVerifiedOrderByCreatedAtAsc(
-                        false, 
-                        limit
-                    );
-        }
-        else if (!latest) {
-            productReviews = 
-                productReviewRepository
-                    .findAllOrderByCreatedAtDesc(limit);
-        }
-        else {
-            productReviews = 
-                productReviewRepository
-                    .findAllOrderByCreatedAtAsc(limit);
-        }
+        List<ProductReview> productReviews = productReviewRepository.findAll(pageable);
 
         if (productReviews.isEmpty()) {
             return ResponseEntity.notFound().build();
         } 
 
         List<ProductReviewCard> productReviewCards = new ArrayList<>();
-        for (ProductReviewIsVerified pr : productReviews) {
+        for (ProductReview pr : productReviews) {
             Optional<AppUser> user = appUserRepository.findById(pr.userId());
-            
-            if (!user.isPresent()) {
-                productReviewCards.add(new ProductReviewCard(
-                    pr.id(),
-                    pr.rating(),
-                    null,
-                    null,
-                    pr.isVerified(),
-                    pr.comment(),
-                    pr.createdAt(),
-                    null
-                ));
-                continue;
-            }
 
             productReviewCards.add(new ProductReviewCard(
                 pr.id(),
                 pr.rating(),
-                user.get().firstName(),
-                user.get().lastName(),
+                user.isPresent() ? user.get().firstName() : null,
+                user.isPresent() ? user.get().lastName() : null,
                 pr.isVerified(),
                 pr.comment(),
                 pr.createdAt(),

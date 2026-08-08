@@ -104,7 +104,7 @@ public class ProductReviewTests {
         ResponseEntity<String> response = 
             restTemplate
                 .getForEntity(
-                    "/products/reviews?latest=false&is_verified=false", 
+                    "/products/reviews?page=0&size=10&sort=rating,desc", 
                     String.class
                 );
 
@@ -122,6 +122,7 @@ public class ProductReviewTests {
             1L, 
             4.0, 
             "It's okay I guess.",
+            true,
             null,
             null
         );

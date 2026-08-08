@@ -10,6 +10,7 @@ public record ProductReview(
     Long userId,  // Uncomment when you add users table
     Double rating,    // Between 1.0 and 5.0
     String comment,
+    Boolean isVerified,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {

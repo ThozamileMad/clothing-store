@@ -56,6 +56,7 @@ INSERT INTO product_review (
     user_id,
     rating,
     comment,
+    is_verified,
     created_at,
     updated_at
 )
@@ -64,6 +65,7 @@ VALUES (
     1,
     4.5,
     'Great fit, very comfortable for everyday wear.',
+    true,
     '2026-07-15 09:12:45',
     '2026-07-15 09:18:10'
 );
@@ -73,6 +75,7 @@ INSERT INTO product_review (
     user_id,
     rating,
     comment,
+    is_verified,
     created_at,
     updated_at
 )
@@ -81,6 +84,7 @@ VALUES (
     2,
     3.5,
     'Good jeans but sizing runs a bit large.',
+    false,
     '2026-07-18 14:27:03',
     '2026-07-18 15:01:42'
 );
@@ -90,6 +94,7 @@ INSERT INTO product_review (
     user_id,
     rating,
     comment,
+    is_verified,
     created_at,
     updated_at
 )
@@ -98,6 +103,7 @@ VALUES (
     3,
     5.0,
     'Perfect fit and great material quality.',
+    true,
     '2026-07-22 11:05:18',
     '2026-07-22 11:05:18'
 );
@@ -107,6 +113,7 @@ INSERT INTO product_review (
     user_id,
     rating,
     comment,
+    is_verified,
     created_at,
     updated_at
 )
@@ -115,6 +122,7 @@ VALUES (
     1,
     4.0,
     'Solid jacket, a bit pricey but worth it.',
+    false,
     '2026-07-28 18:44:56',
     '2026-07-29 08:13:27'
 );
