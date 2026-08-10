@@ -38,8 +38,5 @@ public interface ProductReviewRepository extends CrudRepository<ProductReview, L
     """)
     List<ProductReview> findAllRandomByIsVerified(@Param("limit") Integer limit);
 
-    List<ProductReview>findAll(Pageable pageable);
-
-    List<ProductReview>findAllByIsVerified(@Param("isVerified") Boolean isVerified, Pageable pageable);
-
+    List<ProductReview> findAll(Pageable pageable);
 }

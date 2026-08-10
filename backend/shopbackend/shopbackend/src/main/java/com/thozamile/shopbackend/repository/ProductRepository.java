@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.thozamile.shopbackend.entity.Product;
 
@@ -38,4 +39,13 @@ public interface ProductRepository
         ORDER BY revenue DESC
     """)
     List<Product> findAllByOrderByRevenueDesc(Pageable pageable);
+
+    @Query("""
+        SELECT *
+        FROM product
+        WHERE type_id = :typeId
+        ORDER BY RANDOM()
+        LIMIT :limit
+    """)
+    List<Product> findRandomByTypeId(@Param("typeId") Integer typeId, @Param("limit") Integer limit);
 }

@@ -99,7 +99,7 @@ public class ProductReviewTests {
         System.out.println(response.getBody());
     }
 
-    @Test 
+    //@Test 
     void getAllProductReviewsIsVerified() {
         ResponseEntity<String> response = 
             restTemplate

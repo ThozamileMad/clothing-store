@@ -124,6 +124,7 @@ public class ProductController {
 
         ProductDetailedCard productDetailedCard = new ProductDetailedCard(
             product.id(),
+            product.typeId(),
             product.name(),
             product.description(),
             product.price(),
@@ -170,16 +171,12 @@ public class ProductController {
             Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
             Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
 
-            if (!image.isPresent() || !ratingSummary.isPresent() ) {
-                return ResponseEntity.notFound().build();
-            }
-
             productCards.add(new ProductCard(
                 p.id(),
                 p.name(),
                 p.price(),
-                image.get().url(),
-                ratingSummary.get().averageRating()
+                image.isPresent() ? image.get().url() : null,
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
             ));
         }
 
@@ -201,16 +198,37 @@ public class ProductController {
             Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
             Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
 
-            if (!image.isPresent() || !ratingSummary.isPresent() ) {
-                return ResponseEntity.notFound().build();
-            }
+            productCards.add(new ProductCard(
+                p.id(),
+                p.name(),
+                p.price(),
+                image.isPresent() ? image.get().url() : null,
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
+            ));
+        }
+
+        return ResponseEntity.ok(productCards);
+    }
+
+    @GetMapping("/related_products")
+    ResponseEntity<List<ProductCard>> getRelatedProducts(@PathVariable Integer typeId) {
+        List<Product> products = productRepository.findRandomByTypeId(typeId, 4);
+
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } 
+
+        List<ProductCard> productCards = new ArrayList<>();
+        for (Product p : products) {
+            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
+            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
 
             productCards.add(new ProductCard(
                 p.id(),
                 p.name(),
                 p.price(),
-                image.get().url(),
-                ratingSummary.get().averageRating()
+                image.isPresent() ? image.get().url() : null,
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
             ));
         }
 

@@ -164,4 +164,11 @@ class ProductTests {
         assertThat(imageUrl).isEqualTo("https://example.com/images/slim-tee-1.jpg");
     }
 
+    @Test 
+    void getRelatedProducts() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/products/related_products/1", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        System.out.println(response.getBody());
+    }
 }
