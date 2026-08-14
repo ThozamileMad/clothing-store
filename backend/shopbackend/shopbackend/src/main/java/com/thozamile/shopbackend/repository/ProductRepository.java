@@ -47,35 +47,34 @@ public interface ProductRepository
         ORDER BY RANDOM()
         LIMIT :limit
     """)
-    List<Product> findRandomByTypeId(@Param("typeId") Integer typeId, @Param("limit") Integer limit);
+    List<Product> findRandomByTypeId(
+        @Param("typeId") Integer typeId, 
+        @Param("limit") Integer limit
+    );
 
-    @Query("""
+     @Query("""
         SELECT 
             id,
             name,
             price
         FROM product
         WHERE 
-            (
-             :typeIds IS NULL OR 
-             type_id IN(:typeIds)
-            ) AND 
-            (
-             :styleIds IS NULL OR 
-             style_id IN(:styleIds)
-            ) AND
-            (
-             :minPrice IS NULL OR 
-             :maxPrice IS NULL OR 
-             price BETWEEN :minPrice AND :maxPrice
-            )
-        ORDER BY created_at :order
+            (:typeIds IS NULL OR type_id IN(:typeIds))
+            AND 
+            (:styleIds IS NULL OR style_id IN(:styleIds)) 
+            AND
+            (:minPrice IS NULL OR price >= :minPrice) 
+            AND 
+            (:maxPrice IS NULL OR price <= :maxPrice)
+        ORDER BY 
+            CASE WHEN :order = 'asc' THEN created_at END ASC,
+            CASE WHEN :order = 'desc' THEN created_at END DESC
     """)
     List<Product> findFilteredProducts(
         @Param("typeIds") List<Long> typeIds, 
         @Param("styleIds") List<Long> styleIds, 
         @Param("minPrice") Integer minPrice,
-        @Param("styleIds") Integer maxPrice,
+        @Param("maxPrice") Integer maxPrice,
         @Param("order") String order
     );
 }

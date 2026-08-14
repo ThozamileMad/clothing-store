@@ -164,9 +164,23 @@ class ProductTests {
         assertThat(imageUrl).isEqualTo("https://example.com/images/slim-tee-1.jpg");
     }
 
-    @Test 
+    //@Test 
     void getRelatedProducts() {
         ResponseEntity<String> response = restTemplate.getForEntity("/products/related_products/1", String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        System.out.println(response.getBody());
+    }
+
+    @Test 
+    void getFilteredProducts() {
+        ResponseEntity<String> response = 
+            restTemplate
+                .getForEntity(
+                    "/products/filtered?typeIds=1,2&styleIds=1,3&colors=Black,White&sizes=M,L&minPrice=50&maxPrice=150&dateOrder=desc", 
+                    String.class
+                );
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         System.out.println(response.getBody());

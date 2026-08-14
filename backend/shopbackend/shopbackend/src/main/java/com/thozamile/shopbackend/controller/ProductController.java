@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,6 +34,7 @@ import com.thozamile.shopbackend.repository.ProductImageRepository;
 import com.thozamile.shopbackend.repository.ProductRepository;
 import com.thozamile.shopbackend.repository.ProductReviewRepository;
 import com.thozamile.shopbackend.repository.ProductVariantRepository;
+import com.thozamile.shopbackend.utility.dto.FilteredRequest;
 
 @RestController
 @RequestMapping("/products")
@@ -251,16 +253,26 @@ public class ProductController {
     }
 
     @GetMapping("/filtered") 
-    ResponseEntity<List<ProductCard>> getFilteredProducts(@RequestBody FilteredRequest filtered) {
-        List<Long> typeIds = filtered.typeIds();
-        List<Long> styleIds = filtered.styleIds();
-        List<String> colors = filtered.colors();
-        List<String> sizes = filtered.sizes();
-        Integer minPrice = filtered.minPrice();
-        Integer maxPrice = filtered.maxPrice();
-        String order = filtered.order();
+    ResponseEntity<List<ProductCard>> getFilteredProducts(
+        @RequestParam(required = false)  List<Long> typeIds,
+        @RequestParam(required = false)  List<Long> styleIds,
+        @RequestParam(required = false)  List<String> colors,
+        @RequestParam(required = false)  List<String> sizes,
+        @RequestParam(required = false)  Integer minPrice,
+        @RequestParam(required = false)  Integer maxPrice,
+        @RequestParam(required = false, defaultValue = "desc")  String dateOrder
+    ) {
 
-        List<Product> products = productRepository.findFilteredProducts(typeIds, styleIds, minPrice, maxPrice, order);
+        List<Product> products = 
+            productRepository
+                .findFilteredProducts(
+                    typeIds, 
+                    styleIds, 
+                    minPrice, 
+                    maxPrice, 
+                    dateOrder
+                );
+
         if (products.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -295,26 +307,28 @@ public class ProductController {
                     .map(ProductSize::size)
                     .toList();
 
-            /*
-             Selected colors: [RED, BLACK]
+            Boolean hasColor = 
+                mappedColors
+                    .stream()
+                    .anyMatch(colors::contains);
 
-            Product A: [RED, WHITE]   → ✅ Show
-            Product B: [BLUE]         → ❌ Hide
-            Product C: [BLACK, GREEN] → ✅ Show
-            Product D: [YELLOW]       → ❌ Hide
-            */
+            Boolean hasSize = 
+                mappedSizes
+                    .stream()
+                    .anyMatch(sizes::contains);
 
-            if (mappedColors.containsAll()
+            if (hasColor && hasSize) {
+                productCards.add(new ProductCard(
+                    p.id(),
+                    p.name(),
+                    p.price(),
+                    image.isPresent() ? image.get().url() : null,
+                    ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
+                ));
+            }
+        } 
 
-            productCards.add(new ProductCard(
-                p.id(),
-                p.name(),
-                p.price(),
-                image.isPresent() ? image.get().url() : null,
-                ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
-            ));
-        }
-
+        return ResponseEntity.ok(productCards);
     }
 
     /* 
