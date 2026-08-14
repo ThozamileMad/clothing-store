@@ -168,8 +168,13 @@ public class ProductController {
 
         List<ProductCard> productCards = new ArrayList<>();
         for (Product p : products) {
-            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
-            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
+            Optional<ProductImage> image = 
+                productImageRepository
+                    .findByProductIdAndDisplayOrder(p.id(), 1);
+
+            Optional<ProductRatingSummary> ratingSummary = 
+                productReviewRepository
+                    .findAverageRatingByProductId(p.id());
 
             productCards.add(new ProductCard(
                 p.id(),
@@ -195,8 +200,13 @@ public class ProductController {
 
         List<ProductCard> productCards = new ArrayList<>();
         for (Product p : products) {
-            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
-            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
+            Optional<ProductImage> image = 
+                productImageRepository
+                    .findByProductIdAndDisplayOrder(p.id(), 1);
+            
+            Optional<ProductRatingSummary> ratingSummary = 
+                productReviewRepository
+                    .findAverageRatingByProductId(p.id());
 
             productCards.add(new ProductCard(
                 p.id(),
@@ -210,7 +220,7 @@ public class ProductController {
         return ResponseEntity.ok(productCards);
     }
 
-    @GetMapping("/related_products")
+    @GetMapping("/related_products/{typeId}")
     ResponseEntity<List<ProductCard>> getRelatedProducts(@PathVariable Integer typeId) {
         List<Product> products = productRepository.findRandomByTypeId(typeId, 4);
 
@@ -220,20 +230,27 @@ public class ProductController {
 
         List<ProductCard> productCards = new ArrayList<>();
         for (Product p : products) {
-            Optional<ProductImage> image = productImageRepository.findByProductIdAndDisplayOrder(p.id(), 1);
-            Optional<ProductRatingSummary> ratingSummary = productReviewRepository.findAverageRatingByProductId(p.id());
+            Optional<ProductImage> image = 
+                productImageRepository
+                    .findByProductIdAndDisplayOrder(p.id(), 1);
+            
+            Optional<ProductRatingSummary> ratingSummary = 
+                productReviewRepository
+                    .findAverageRatingByProductId(p.id());
 
             productCards.add(new ProductCard(
                 p.id(),
                 p.name(),
                 p.price(),
                 image.isPresent() ? image.get().url() : null,
-                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
             ));
         }
 
         return ResponseEntity.ok(productCards);
     }
+
+    @GetMapping("/casual")
 
 
     /* 
