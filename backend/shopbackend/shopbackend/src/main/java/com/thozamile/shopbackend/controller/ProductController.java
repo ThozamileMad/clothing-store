@@ -250,8 +250,72 @@ public class ProductController {
         return ResponseEntity.ok(productCards);
     }
 
-    @GetMapping("/casual")
+    @GetMapping("/filtered") 
+    ResponseEntity<List<ProductCard>> getFilteredProducts(@RequestBody FilteredRequest filtered) {
+        List<Long> typeIds = filtered.typeIds();
+        List<Long> styleIds = filtered.styleIds();
+        List<String> colors = filtered.colors();
+        List<String> sizes = filtered.sizes();
+        Integer minPrice = filtered.minPrice();
+        Integer maxPrice = filtered.maxPrice();
+        String order = filtered.order();
 
+        List<Product> products = productRepository.findFilteredProducts(typeIds, styleIds, minPrice, maxPrice, order);
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<ProductCard> productCards = new ArrayList<>();
+        for (Product p : products) {
+            Optional<ProductImage> image = 
+                productImageRepository
+                    .findByProductIdAndDisplayOrder(p.id(), 1);
+
+            Optional<ProductRatingSummary> ratingSummary = 
+                productReviewRepository
+                    .findAverageRatingByProductId(p.id());
+
+            List<ProductColor> productColors =
+                productVariantRepository
+                    .findAllColorsByProductId(p.id());
+            
+            List<ProductSize> productSizes =
+                productVariantRepository
+                    .findAllSizesByProductId(p.id());
+
+            List<String> mappedColors = 
+                productColors
+                    .stream()
+                    .map(ProductColor::color)
+                    .toList();
+
+            List<String> mappedSizes = 
+                productSizes
+                    .stream()
+                    .map(ProductSize::size)
+                    .toList();
+
+            /*
+             Selected colors: [RED, BLACK]
+
+            Product A: [RED, WHITE]   → ✅ Show
+            Product B: [BLUE]         → ❌ Hide
+            Product C: [BLACK, GREEN] → ✅ Show
+            Product D: [YELLOW]       → ❌ Hide
+            */
+
+            if (mappedColors.containsAll()
+
+            productCards.add(new ProductCard(
+                p.id(),
+                p.name(),
+                p.price(),
+                image.isPresent() ? image.get().url() : null,
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
+            ));
+        }
+
+    }
 
     /* 
     @PostMapping
