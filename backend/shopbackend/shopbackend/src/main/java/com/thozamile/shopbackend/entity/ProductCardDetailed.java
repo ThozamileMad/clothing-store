@@ -2,7 +2,7 @@ package com.thozamile.shopbackend.entity;
 
 import java.util.List;
 
-public record ProductDetailedCard(
+public record ProductCardDetailed(
     Long id, 
     Long typeId,
     String name, 

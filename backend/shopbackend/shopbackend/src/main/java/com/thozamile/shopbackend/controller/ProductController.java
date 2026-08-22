@@ -23,18 +23,22 @@ import java.util.Optional;
 
 import com.thozamile.shopbackend.entity.ProductCard;
 import com.thozamile.shopbackend.entity.ProductColor;
-import com.thozamile.shopbackend.entity.ProductDetailedCard;
+import com.thozamile.shopbackend.entity.ProductCardDetailed;
 import com.thozamile.shopbackend.entity.Product;
 import com.thozamile.shopbackend.entity.ProductImage;
 import com.thozamile.shopbackend.entity.ProductImageUrl;
 import com.thozamile.shopbackend.entity.ProductRatingSummary;
 import com.thozamile.shopbackend.entity.ProductSize;
 import com.thozamile.shopbackend.entity.ProductVariant;
+import com.thozamile.shopbackend.repository.DressStyleRepository;
+import com.thozamile.shopbackend.repository.DressTypeRepository;
 import com.thozamile.shopbackend.repository.ProductImageRepository;
 import com.thozamile.shopbackend.repository.ProductRepository;
 import com.thozamile.shopbackend.repository.ProductReviewRepository;
 import com.thozamile.shopbackend.repository.ProductVariantRepository;
 import com.thozamile.shopbackend.utility.dto.FilteredRequest;
+
+import jakarta.validation.constraints.Null;
 
 @RestController
 @RequestMapping("/products")
@@ -43,17 +47,23 @@ public class ProductController {
     private final ProductImageRepository productImageRepository;
     private final ProductReviewRepository productReviewRepository;
     private final ProductVariantRepository productVariantRepository;
+    private final DressTypeRepository dressTypeRepository;
+    private final DressStyleRepository dressStyleRepository;
 
     private ProductController(
         ProductRepository productRepository, 
         ProductImageRepository productImageRepository,
         ProductReviewRepository productReviewRepository,
-        ProductVariantRepository productVariantRepository
+        ProductVariantRepository productVariantRepository,
+        DressTypeRepository dressTypeRepository,
+        DressStyleRepository dressStyleRepository
     ) {
         this.productRepository = productRepository;
         this.productImageRepository = productImageRepository;
         this.productReviewRepository = productReviewRepository;
         this.productVariantRepository = productVariantRepository;
+        this.dressTypeRepository = dressTypeRepository;
+        this.dressStyleRepository = dressStyleRepository;
     }
 
     @GetMapping("/{requestedId}")
@@ -68,7 +78,7 @@ public class ProductController {
     
 
     @GetMapping("/detailed/{requestedId}")
-    private ResponseEntity<ProductDetailedCard> getDetailedProductById(@PathVariable Long requestedId) {
+    private ResponseEntity<ProductCardDetailed> getDetailedProductById(@PathVariable Long requestedId) {
         Optional<Product> productOptional = productRepository.findById(requestedId);
 
         if (!productOptional.isPresent()) {
@@ -124,7 +134,7 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
 
-        ProductDetailedCard productDetailedCard = new ProductDetailedCard(
+        ProductCardDetailed productDetailedCard = new ProductCardDetailed(
             product.id(),
             product.typeId(),
             product.name(),
@@ -183,7 +193,8 @@ public class ProductController {
                 p.name(),
                 p.price(),
                 image.isPresent() ? image.get().url() : null,
-                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null,
+                p.createdAt()
             ));
         }
 
@@ -215,7 +226,8 @@ public class ProductController {
                 p.name(),
                 p.price(),
                 image.isPresent() ? image.get().url() : null,
-                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating() : null,
+                p.createdAt()
             ));
         }
 
@@ -245,7 +257,8 @@ public class ProductController {
                 p.name(),
                 p.price(),
                 image.isPresent() ? image.get().url() : null,
-                ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
+                ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null,
+                p.createdAt()
             ));
         }
 
@@ -263,11 +276,31 @@ public class ProductController {
         @RequestParam(required = false, defaultValue = "desc")  String dateOrder
     ) {
 
+        List<Long> defaultTypeIds = null;
+        if (typeIds == null || typeIds.isEmpty()) {
+            defaultTypeIds = dressTypeRepository.findAllIds();
+        }
+
+        List<Long> defaultStyleIds = null;
+        if (styleIds == null || styleIds.isEmpty()) {
+            defaultStyleIds = dressStyleRepository.findAllIds();
+        }
+
+        List<String> defaultColors = null;
+        if (colors == null || colors.isEmpty()) {
+            defaultColors = productVariantRepository.findAllColors();
+        }
+
+        List<String> defaultSizes = null;
+        if (sizes == null || sizes.isEmpty()) {
+            defaultSizes = productVariantRepository.findAllSizes();
+        }
+
         List<Product> products = 
             productRepository
                 .findFilteredProducts(
-                    typeIds, 
-                    styleIds, 
+                    defaultTypeIds == null ? typeIds : defaultTypeIds, 
+                    defaultStyleIds == null ? styleIds : defaultStyleIds, 
                     minPrice, 
                     maxPrice, 
                     dateOrder
@@ -308,14 +341,22 @@ public class ProductController {
                     .toList();
 
             Boolean hasColor = 
-                mappedColors
-                    .stream()
-                    .anyMatch(colors::contains);
+                defaultColors == null ?
+                    mappedColors
+                        .stream()
+                        .anyMatch(colors::contains) :
+                    mappedColors
+                        .stream()
+                        .anyMatch(defaultColors::contains);
 
             Boolean hasSize = 
-                mappedSizes
-                    .stream()
-                    .anyMatch(sizes::contains);
+                defaultSizes == null ?
+                    mappedSizes
+                        .stream()
+                        .anyMatch(sizes::contains) :
+                    mappedSizes
+                        .stream()
+                        .anyMatch(defaultSizes::contains);
 
             if (hasColor && hasSize) {
                 productCards.add(new ProductCard(
@@ -323,7 +364,8 @@ public class ProductController {
                     p.name(),
                     p.price(),
                     image.isPresent() ? image.get().url() : null,
-                    ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null
+                    ratingSummary.isPresent() ? ratingSummary.get().averageRating(): null,
+                    p.createdAt()
                 ));
             }
         } 

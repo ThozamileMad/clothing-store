@@ -59,9 +59,9 @@ public interface ProductRepository
             price
         FROM product
         WHERE 
-            (:typeIds IS NULL OR type_id IN(:typeIds))
+            (type_id IN(:typeIds))
             AND 
-            (:styleIds IS NULL OR style_id IN(:styleIds)) 
+            (style_id IN(:styleIds)) 
             AND
             (:minPrice IS NULL OR price >= :minPrice) 
             AND 

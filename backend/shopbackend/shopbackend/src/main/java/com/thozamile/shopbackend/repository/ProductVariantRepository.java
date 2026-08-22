@@ -28,4 +28,11 @@ public interface ProductVariantRepository extends CrudRepository<ProductVariant,
         WHERE product_id = :productId
     """)
     List<ProductSize> findAllSizesByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT DISTINCT color FROM product_variant")
+    List<String> findAllColors();
+
+    @Query("SELECT DISTINCT size FROM product_variant")
+    List<String> findAllSizes();
+
 }   

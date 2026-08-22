@@ -177,7 +177,7 @@ class ProductTests {
         ResponseEntity<String> response = 
             restTemplate
                 .getForEntity(
-                    "/products/filtered?typeIds=1,2&styleIds=1,3&colors=Black,White&sizes=M,L&minPrice=50&maxPrice=150&dateOrder=desc", 
+                    "/products/filtered?colors=Black&sizes=L", 
                     String.class
                 );
 
